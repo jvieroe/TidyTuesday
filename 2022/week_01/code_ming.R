@@ -4,10 +4,10 @@ library(ggtext)
 library(MetBrewer)
 library(ggfx)
 
-ming <- read_sf(dsn = "2022/ming_routes/data/Ming_Routes_2016",
+ming <- read_sf(dsn = "2022/week_01/data/Ming_Routes_2016",
                 layer = "Ming_Routes_2016")
 
-maps <- read_sf(dsn = "2022/ming_routes/data/ne_10m_admin_0_countries",
+maps <- read_sf(dsn = "2022/week_01/data/ne_10m_admin_0_countries",
                 layer = "ne_10m_admin_0_countries")
 
 maps <- maps %>%  
@@ -41,7 +41,7 @@ cntry_fill <- pal[1]
 roads_fill <- pal[5]
 
 bkg_col <- "gray10"
-fg_col <- "gray75"
+fg_col <- pal[3]
 
 
 ggplot() +
@@ -93,7 +93,7 @@ ggplot() +
         plot.margin = grid::unit(c(t = 0, r = 0, b = 0, l = 0), "mm"))
 
 
-ggsave(plot = last_plot(), "2022/ming_routes/ming.png",
+ggsave(plot = last_plot(), "2022/week_01/ming.png",
        dpi = 600,
        width = 8.5, height = 7)
 
