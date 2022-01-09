@@ -40,7 +40,7 @@ cntry_col <- pal[2]
 cntry_fill <- pal[1]
 roads_fill <- pal[5]
 
-bkg_col <- "gray10"
+bkg_col <- "#0E1116"
 fg_col <- pal[3]
 
 
