@@ -1,5 +1,5 @@
 # TidyTuesday
-repo for #TidyTuesday commits
+repo for <a href="https://github.com/rfordatascience/tidytuesday"> #TidyTuesday</a> commits
 
 
 # 2022
