@@ -2,6 +2,9 @@ library(tidyverse)
 library(tidytuesdayR)
 library(sf)
 
+# https://github.com/rfordatascience/tidytuesday/blob/master/data/2022/2022-01-11/readme.md
+
+
 tt <- tidytuesdayR::tt_load('2022-01-11')
 
 colony <- tt[[1]]
@@ -20,7 +23,7 @@ hexa <- hexa %>%
 
 
 ggplot() +
-  geom_sf(data = hex)
+  geom_sf(data = hexa)
 
 hexa <- hexa %>% 
   mutate(state = gsub(" \\(United States\\)", "", google_nam)) %>% 
@@ -34,12 +37,16 @@ cents <- hexa %>%
   st_centroid()
 
 ggplot() +
-  geom_sf(data = hex) +
+  geom_sf(data = hexa) +
   geom_sf(data = cents)
 
 
 
-class(hexa$geometry)
+
+colony <- colony %>% 
+  filter(year %in% c(2015, 2021)) %>% 
+  filter((year == 2015 & months == "January-March") | (year == 2021 & months == "April-June"))
+
 
 
 
