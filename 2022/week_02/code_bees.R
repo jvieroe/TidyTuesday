@@ -209,4 +209,3 @@ ggdraw() +
   draw_plot(map, 0, 0, 1, 1) +
   draw_plot(legend, 0.775, 0.025, 0.225, 0.225)
 
-
