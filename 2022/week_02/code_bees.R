@@ -7,7 +7,7 @@ library(ggsflabel)
 library(cowplot)
 library(colorspace)
 library(shadowtext)
-library(colorjam)
+library(ggtext)
 
 # https://github.com/rfordatascience/tidytuesday/blob/master/data/2022/2022-01-11/readme.md
 
@@ -15,17 +15,19 @@ library(colorjam)
 # ------------------------------------------------------------------
 # TidyTuesday data
 # ------------------------------------------------------------------
+# tt <- tidytuesdayR::tt_load('2022-01-11')
+# 
+# colony <- tt[[1]]
+# stressor <- tt[[2]]
 
-tt <- tidytuesdayR::tt_load('2022-01-11')
-
-colony <- tt[[1]]
-stressor <- tt[[2]]
+colony <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-01-11/colony.csv')
+stressor <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-01-11/stressor.csv')
 
 colony <- colony %>% 
   filter(!state %in% c("United States", "Other States"))
 
 stressor <- stressor %>% 
-  filter(state != "United States")
+  filter(!state %in% c("United States", "Other States"))
 
 
 stressor <- stressor %>% 
@@ -47,9 +49,6 @@ df <- df %>%
          stressor_pct = mean(varroa_mites, na.rm = TRUE)) %>% 
   ungroup()
 
-ggplot(df, aes(x = stressor_pct, y = lost_pct)) +
-  geom_point()
-
 
 
 # ------------------------------------------------------------------
@@ -70,17 +69,17 @@ cents <- hexa %>%
   st_centroid() %>% 
   select(state, iso3166_2)
 
+cents <- cents %>% 
+  st_coordinates() %>%
+  as.data.frame() %>% 
+  tibble() %>% 
+  mutate(label = cents$iso3166_2)
+
 
 # ------------------------------------------------------------------
 # Merge data
 # ------------------------------------------------------------------
-vec1 <- unique(df$state)
-vec2 <- unique(hexa$state)
-
-intersect(vec1, vec2)
-setdiff(vec1, vec2)
-
-rm(vec1, vec2)
+setdiff(unique(df$state), unique(hexa$state))
 
 df <- df %>% 
   distinct(., state,
@@ -91,127 +90,106 @@ hexa <- hexa %>%
                      df,
                      by = "state")
 
+rm(colony, stressor, df)
 
-
-cents_raw <- cents %>% 
-  st_coordinates() %>%
-  as.data.frame() %>% 
-  tibble() %>% 
-  mutate(label = cents$iso3166_2)
-
-ggplot() +
-  geom_sf(data = hexa, color = "white", size = .5) +
-  #geom_sf_text(data = cents, aes(label = iso3166_2), color = "black", size = 4) +
-  geom_shadowtext(data = cents_raw, aes(x = X, y = Y, label = label))
-  
-# ------------------------------------------------------------------
-# Plot
-# ------------------------------------------------------------------
-# create 3 buckets for gini
-quantiles_lost <- hexa %>%
-  pull(lost_pct) %>%
-  quantile(probs = seq(0, 1, length.out = 4), na.rm = TRUE)
-
-quantiles_stressor <- hexa %>%
-  pull(stressor_pct) %>%
-  quantile(probs = seq(0, 1, length.out = 4), na.rm = TRUE)
-
-
-# h1 <- "#F2B104"
-# h2 <- "#F59E02"
-# h3 <- "#F79101"
-# 
-# b1 <- "#D7DCEA"
-# b2 <- "#A1B3D7"
-# b3 <- "#6581BF"
-# 
-# 
-# bivariate_color_scale <- tibble("3 - 3" = "#AE8960",
-#                                 "2 - 3" = "#AD9061",
-#                                 "1 - 3" = "#AC9962",
-#                                 "3 - 2" = "#CCA26C",
-#                                 "2 - 2" = "#CBA96D",
-#                                 "1 - 2" = "#CAB26E",
-#                                 "3 - 1" = "#E7B776",
-#                                 "2 - 1" = "#E6BD76",
-#                                 "1 - 1" = "#E5C777") %>%
-#   gather("group", "fill")
-# 
-
-bivariate_color_scale <- tibble("3 - 3" = "#3F2949",
-                                "2 - 3" = "#435786",
-                                "1 - 3" = "#4885C1",
-                                "3 - 2" = "#77324C",
-                                "2 - 2" = "#806A8A",
-                                "1 - 2" = "#89A1C8",
-                                "3 - 1" = "#AE3A4E",
-                                "2 - 1" = "#BC7C8F",
-                                "1 - 1" = "#CABED0") %>%
-  gather("group", "fill")
-
-
-"#4885C1"
-"#AE3A4E"
-
-tmp <- blend_colors(c("#4885C1",
-                      "#AE3A4E"),
-                    do_plot = F)
-
-
-ggplot() +
-  geom_sf(data = hexa, fill = tmp)
-
-
-
-na_col <- "gray90"
-na_col <- "transparent"
-
-plot_df <- hexa %>% 
+hexa <- hexa %>% 
   select(state, lost_pct, stressor_pct)
 
 
+# ------------------------------------------------------------------
+# Prepare bivariate color mapping
+# ------------------------------------------------------------------
+col_scale <- tibble("3 - 3" = "#3F2949",
+                    "2 - 3" = "#435786",
+                    "1 - 3" = "#4885C1",
+                    "3 - 2" = "#77324C",
+                    "2 - 2" = "#806A8A",
+                    "1 - 2" = "#89A1C8",
+                    "3 - 1" = "#AE3A4E",
+                    "2 - 1" = "#BC7C8F",
+                    "1 - 1" = "#CABED0") %>% 
+  pivot_longer(cols = everything(),
+               names_to = "group",
+               values_to = "fill")
+
+quantiles_x <- hexa %>%
+  pull(stressor_pct) %>%
+  quantile(probs = seq(0, 1, length.out = 4), na.rm = TRUE)
+
+quantiles_y <- hexa %>%
+  pull(lost_pct) %>%
+  quantile(probs = seq(0, 1, length.out = 4), na.rm = TRUE)
+
+hexa <- hexa %>% 
+  mutate(quant_x = cut(stressor_pct,
+                       breaks = quantiles_x,
+                       include.lowest = TRUE),
+         quant_y = cut(lost_pct,
+                       breaks = quantiles_y,
+                       include.lowest = TRUE)) %>% 
+  mutate(group = paste(as.numeric(quant_x),
+                       as.numeric(quant_y),
+                       sep = " - ")) %>% 
+  left_join(col_scale, by = "group")
+
+na_col <- "transparent"
+
+hexa <- hexa %>% 
+  mutate(fill = ifelse(is.na(fill), na_col, fill))
 
 
-plot_df <- plot_df %>% 
-  mutate(lost_quantiles = cut(lost_pct,
-                              breaks = quantiles_lost,
-                              include.lowest = TRUE),
-         stressor_quantiles = cut(stressor_pct,
-                                  breaks = quantiles_stressor,
-                                  include.lowest = TRUE),
-         group = paste(as.numeric(lost_quantiles), "-",
-                       as.numeric(stressor_quantiles))) %>% 
-  left_join(bivariate_color_scale, by = "group")
+bi_legend <- col_scale %>% 
+  separate(group, into = c("stressor_pct", "lost_pct"), sep = " - ") %>%
+  mutate(stressor = as.integer(stressor_pct),
+         lost_pct = as.integer(lost_pct))
 
 
 
+# ------------------------------------------------------------------
+# Plot
+# ------------------------------------------------------------------
 
-plot_df <- plot_df %>% 
-  mutate(fill = ifelse(is.na(fill),
-                       na_col,
-                       fill))
-
+# ----- Plot map
 honey_pal <- c("#E3D7C1", "#C8B188", "#C4952E", "#BE7C22", "#93500C")
 bgk_col <- "goldenrod"
 bgk_col <- honey_pal[1]
 bgk_col <- colorspace::lighten("goldenrod", .05)
 
-bi_legend <- bivariate_color_scale %>% 
-  separate(group, into = c("lost_pct", "stressor_pct"), sep = " - ") %>%
-  mutate(lost_pct = as.integer(lost_pct),
-         stressor = as.integer(stressor_pct))
 
+# ggplot() +
+#   geom_sf(data = hexa, fill = honey_pal[5])
+
+
+font <- "Pacifico"
+
+map <- ggplot() +
+  geom_sf(data = hexa, aes(fill = fill), color = "white", size = .5) +
+  #geom_sf_text(data = cents, aes(label = iso3166_2), color = "white") +
+  geom_shadowtext(data = cents, aes(x = X, y = Y, label = label)) +
+  scale_fill_identity() +
+  labs(title = "Bee colony loss") + 
+  theme_void() +
+  theme(panel.background = element_rect(fill = bgk_col,
+                                        color = bgk_col),
+        plot.background = element_rect(fill = bgk_col,
+                                       color = bgk_col),
+        plot.margin = margin(0, 0, 80, 0),
+        plot.title = element_text(color = "black", family = font, size = 30,
+                                  hjust = 0.5))
+
+
+# ----- Plot legend
 legend <- ggplot() +
   geom_tile(data = bi_legend,
             mapping = aes(x = lost_pct,
                           y = stressor_pct,
                           fill = fill)) +
   scale_fill_identity() +
-  labs(x = expression("More colonies lost" %->% ""),
-       y = expression("Higher stressor" %->% "")) +
-  theme_map() +
-  theme(axis.title.x = element_text(size = 6),
-        axis.title.y = element_text(size = 6,
+  labs(x = expression("Higher stressor" %->%""),
+       y = expression("More colonies lost" %->%"")) +
+  cowplot::theme_map() +
+  theme(axis.title.x = element_text(size = 8),
+        axis.title.y = element_text(size = 8,
                                     angle = 90)) +
   coord_fixed() +
   theme(panel.background = element_rect(fill = "transparent",
@@ -219,20 +197,10 @@ legend <- ggplot() +
         plot.background = element_rect(fill = "transparent",
                                        color = "transparent"))
 
-map <- ggplot() +
-  geom_sf(data = plot_df, aes(fill = fill), color = "white", size = .5) +
-  #geom_sf_text(data = cents, aes(label = iso3166_2), color = "white") +
-  geom_shadowtext(data = cents_raw, aes(x = X, y = Y, label = label)) +
-  scale_fill_identity(na.value = "pink") +
-  theme_void() +
-  theme(panel.background = element_rect(fill = bgk_col,
-                                        color = bgk_col),
-        plot.background = element_rect(fill = bgk_col,
-                                       color = bgk_col),
-        plot.margin = margin(0, 0, 80, 0))
 
-
+# ----- Combine plots
 ggdraw() +
   draw_plot(map, 0, 0, 1, 1) +
-  draw_plot(legend, 0.775, 0.025, 0.225, 0.225)
+  draw_plot(legend, 0.775, 0.055, 0.2275, 0.2275)
+
 
