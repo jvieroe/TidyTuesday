@@ -6,6 +6,8 @@ library(janitor)
 library(ggsflabel)
 library(cowplot)
 library(colorspace)
+library(shadowtext)
+library(colorjam)
 
 # https://github.com/rfordatascience/tidytuesday/blob/master/data/2022/2022-01-11/readme.md
 
@@ -91,6 +93,17 @@ hexa <- hexa %>%
 
 
 
+cents_raw <- cents %>% 
+  st_coordinates() %>%
+  as.data.frame() %>% 
+  tibble() %>% 
+  mutate(label = cents$iso3166_2)
+
+ggplot() +
+  geom_sf(data = hexa, color = "white", size = .5) +
+  #geom_sf_text(data = cents, aes(label = iso3166_2), color = "black", size = 4) +
+  geom_shadowtext(data = cents_raw, aes(x = X, y = Y, label = label))
+  
 # ------------------------------------------------------------------
 # Plot
 # ------------------------------------------------------------------
@@ -135,6 +148,19 @@ bivariate_color_scale <- tibble("3 - 3" = "#3F2949",
                                 "2 - 1" = "#BC7C8F",
                                 "1 - 1" = "#CABED0") %>%
   gather("group", "fill")
+
+
+"#4885C1"
+"#AE3A4E"
+
+tmp <- blend_colors(c("#4885C1",
+                      "#AE3A4E"),
+                    do_plot = F)
+
+
+ggplot() +
+  geom_sf(data = hexa, fill = tmp)
+
 
 
 na_col <- "gray90"
@@ -195,7 +221,8 @@ legend <- ggplot() +
 
 map <- ggplot() +
   geom_sf(data = plot_df, aes(fill = fill), color = "white", size = .5) +
-  geom_sf_text(data = cents, aes(label = iso3166_2)) +
+  #geom_sf_text(data = cents, aes(label = iso3166_2), color = "white") +
+  geom_shadowtext(data = cents_raw, aes(x = X, y = Y, label = label)) +
   scale_fill_identity(na.value = "pink") +
   theme_void() +
   theme(panel.background = element_rect(fill = bgk_col,
