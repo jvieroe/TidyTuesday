@@ -151,7 +151,7 @@ bi_legend <- col_scale %>%
 # ------------------------------------------------------------------
 
 # ----- Plot map
-font1 <- "Pacifico"
+font1 <- "Roboto"
 font2 <- "Roboto"
 
 honey_pal <- c("#E3D7C1", "#C8B188", "#C4952E", "#BE7C22", "#93500C")
