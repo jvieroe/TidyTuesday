@@ -151,7 +151,7 @@ bi_legend <- col_scale %>%
 # ------------------------------------------------------------------
 
 # ----- Plot map
-font1 <- "Roboto"
+font1 <- "Licorice"
 font2 <- "Roboto"
 
 honey_pal <- c("#E3D7C1", "#C8B188", "#C4952E", "#BE7C22", "#93500C")
@@ -194,7 +194,7 @@ map <- ggplot() +
                                         color = bgk_col),
         plot.background = element_rect(fill = bgk_col,
                                        color = bgk_col),
-        plot.margin = margin(30, 0, 10, 0),
+        plot.margin = margin(32, 0, 12, 0),
         plot.title = element_text(color = fg_col, family = font1, size = 30,
                                   hjust = .5, vjust = 0),
         plot.subtitle = element_text(color = fg_col, family = font2, size = 10,
@@ -202,13 +202,11 @@ map <- ggplot() +
         plot.caption = ggtext::element_markdown(family = font2, color = fg_col, hjust = .05))
 
 title <- ggplot() +
-  annotate("richtext", x = 1, y = 1,
+  annotate("text", x = 1, y = 1,
            label = "Bee Colonies under stress",
            family = font1,
-           size = 14,
-           label.color = NA,
-           text.color = fg_col,
-           fill = NA, alpha = 1) +
+           size = 22,
+           color = fg_col) +
   theme_void()
 
 subtitle <- ggplot() +
@@ -223,7 +221,11 @@ subtitle <- ggplot() +
 # ----- Combine plots
 ggdraw() +
   draw_plot(map, 0, 0, 1, 1) +
-  draw_plot(legend, 0.78, 0.01, 0.24, 0.24) +
+  draw_plot(legend, 0.78, 0.02, 0.24, 0.24) +
   draw_plot(title, 0, .42, 1, 1) +
   draw_plot(subtitle, 0, .3, 1, 1)
+
+ggsave(plot = last_plot(),
+       "2022/week_02/bees.png",
+       dpi = 600, scale = 1)
 
