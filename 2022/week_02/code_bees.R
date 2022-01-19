@@ -43,10 +43,11 @@ df <- colony %>%
   clean_names()
 
 
+
 df <- df %>% 
   group_by(state) %>% 
-  mutate(lost_pct = mean(colony_lost_pct, na.rm = TRUE),
-         stressor_pct = mean(varroa_mites, na.rm = TRUE)) %>% 
+  summarize(lost_pct = mean(colony_lost_pct, na.rm = TRUE),
+            stressor_pct = mean(varroa_mites, na.rm = TRUE)) %>% 
   ungroup()
 
 
@@ -150,33 +151,14 @@ bi_legend <- col_scale %>%
 # ------------------------------------------------------------------
 
 # ----- Plot map
+font1 <- "Pacifico"
+font2 <- "Roboto"
+
 honey_pal <- c("#E3D7C1", "#C8B188", "#C4952E", "#BE7C22", "#93500C")
-bgk_col <- "goldenrod"
-bgk_col <- honey_pal[1]
 bgk_col <- colorspace::lighten("goldenrod", .05)
-
-
-# ggplot() +
-#   geom_sf(data = hexa, fill = honey_pal[5])
-
-
-font <- "Pacifico"
-
-map <- ggplot() +
-  geom_sf(data = hexa, aes(fill = fill), color = "white", size = .5) +
-  #geom_sf_text(data = cents, aes(label = iso3166_2), color = "white") +
-  geom_shadowtext(data = cents, aes(x = X, y = Y, label = label)) +
-  scale_fill_identity() +
-  labs(title = "Bee colony loss") + 
-  theme_void() +
-  theme(panel.background = element_rect(fill = bgk_col,
-                                        color = bgk_col),
-        plot.background = element_rect(fill = bgk_col,
-                                       color = bgk_col),
-        plot.margin = margin(0, 0, 80, 0),
-        plot.title = element_text(color = "black", family = font, size = 30,
-                                  hjust = 0.5))
-
+bgk_col <- honey_pal[3]
+fg_col <- honey_pal[5]
+fg_col <- colorspace::darken(honey_pal[5], 0.2)
 
 # ----- Plot legend
 legend <- ggplot() +
@@ -185,11 +167,13 @@ legend <- ggplot() +
                           y = stressor_pct,
                           fill = fill)) +
   scale_fill_identity() +
-  labs(x = expression("Higher stressor" %->%""),
+  labs(x = expression("More colonies affected" %->%""),
        y = expression("More colonies lost" %->%"")) +
   cowplot::theme_map() +
-  theme(axis.title.x = element_text(size = 8),
+  theme(axis.title.x = element_text(size = 8,
+                                    color = fg_col),
         axis.title.y = element_text(size = 8,
+                                    color = fg_col,
                                     angle = 90)) +
   coord_fixed() +
   theme(panel.background = element_rect(fill = "transparent",
@@ -198,9 +182,48 @@ legend <- ggplot() +
                                        color = "transparent"))
 
 
+map <- ggplot() +
+  geom_sf(data = hexa, aes(fill = fill), color = "white", size = .65) +
+  geom_shadowtext(data = cents, aes(x = X, y = Y, label = label)) +
+  scale_fill_identity() +
+  labs(title = "",
+       subtitle = "",
+       caption = "Graphics: Jeppe Vierø | <span style='font-family: \"Font Awesome 5 Brands\"'> &#xf099;</span> &emsp; <span style='font-family: \"Font Awesome 5 Brands\"'>&#xf09b; &emsp; &emsp; </span> jvieroe | #TidyTuesday 2022, Week 2") + 
+  theme_void() +
+  theme(panel.background = element_rect(fill = bgk_col,
+                                        color = bgk_col),
+        plot.background = element_rect(fill = bgk_col,
+                                       color = bgk_col),
+        plot.margin = margin(30, 0, 10, 0),
+        plot.title = element_text(color = fg_col, family = font1, size = 30,
+                                  hjust = .5, vjust = 0),
+        plot.subtitle = element_text(color = fg_col, family = font2, size = 10,
+                                     hjust = .5, vjust = 0),
+        plot.caption = ggtext::element_markdown(family = font2, color = fg_col, hjust = .05))
+
+title <- ggplot() +
+  annotate("richtext", x = 1, y = 1,
+           label = "Bee Colonies under stress",
+           family = font1,
+           size = 14,
+           label.color = NA,
+           text.color = fg_col,
+           fill = NA, alpha = 1) +
+  theme_void()
+
+subtitle <- ggplot() +
+  annotate("text", x = 1, y = 1,
+           label = "Share of colonies affected by the Varroa mite and share of colonies lost,\nmeasured at the state-quarter level and averaged across the period 2015-2021.",
+           family = font2,
+           size = 3.5,
+           color = fg_col) +
+  theme_void()
+
+
 # ----- Combine plots
 ggdraw() +
   draw_plot(map, 0, 0, 1, 1) +
-  draw_plot(legend, 0.775, 0.055, 0.2275, 0.2275)
-
+  draw_plot(legend, 0.78, 0.01, 0.24, 0.24) +
+  draw_plot(title, 0, .42, 1, 1) +
+  draw_plot(subtitle, 0, .3, 1, 1)
 
