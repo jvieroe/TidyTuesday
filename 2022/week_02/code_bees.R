@@ -3,7 +3,6 @@ library(tidytuesdayR)
 library(lubridate)
 library(sf)
 library(janitor)
-library(ggsflabel)
 library(cowplot)
 library(colorspace)
 library(shadowtext)
@@ -15,13 +14,9 @@ library(ggtext)
 # ------------------------------------------------------------------
 # TidyTuesday data
 # ------------------------------------------------------------------
-# tt <- tidytuesdayR::tt_load('2022-01-11')
-# 
-# colony <- tt[[1]]
-# stressor <- tt[[2]]
-
-colony <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-01-11/colony.csv')
-stressor <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-01-11/stressor.csv')
+tt <- tidytuesdayR::tt_load('2022-01-11')
+colony <- tt[[1]]
+stressor <- tt[[2]]
 
 colony <- colony %>% 
   filter(!state %in% c("United States", "Other States"))
@@ -65,7 +60,6 @@ hexa <- hexa %>%
   mutate(state = gsub(" \\(United States\\)", "", google_nam)) %>% 
   relocate(state, .before = geometry)
 
-
 cents <- hexa %>% 
   st_centroid() %>% 
   select(state, iso3166_2)
@@ -81,10 +75,6 @@ cents <- cents %>%
 # Merge data
 # ------------------------------------------------------------------
 setdiff(unique(df$state), unique(hexa$state))
-
-df <- df %>% 
-  distinct(., state,
-           .keep_all = TRUE)
 
 hexa <- hexa %>% 
   tidylog::left_join(.,
@@ -133,11 +123,8 @@ hexa <- hexa %>%
                        sep = " - ")) %>% 
   left_join(col_scale, by = "group")
 
-na_col <- "transparent"
-
 hexa <- hexa %>% 
-  mutate(fill = ifelse(is.na(fill), na_col, fill))
-
+  mutate(fill = ifelse(is.na(fill), "transparent", fill))
 
 bi_legend <- col_scale %>% 
   separate(group, into = c("stressor_pct", "lost_pct"), sep = " - ") %>%
@@ -154,11 +141,9 @@ bi_legend <- col_scale %>%
 font1 <- "Licorice"
 font2 <- "Roboto"
 
-honey_pal <- c("#E3D7C1", "#C8B188", "#C4952E", "#BE7C22", "#93500C")
-bgk_col <- colorspace::lighten("goldenrod", .05)
-bgk_col <- honey_pal[3]
-fg_col <- honey_pal[5]
-fg_col <- colorspace::darken(honey_pal[5], 0.2)
+bgk_col <- "#C4952E"
+fg_col <- colorspace::darken("#93500C", 0.2)
+
 
 # ----- Plot legend
 legend <- ggplot() +
@@ -170,9 +155,11 @@ legend <- ggplot() +
   labs(x = expression("More colonies affected" %->%""),
        y = expression("More colonies lost" %->%"")) +
   cowplot::theme_map() +
-  theme(axis.title.x = element_text(size = 8,
+  theme(axis.title.x = element_text(size = 8.5,
+                                    family = font2,
                                     color = fg_col),
-        axis.title.y = element_text(size = 8,
+        axis.title.y = element_text(size = 8.5,
+                                    family = font2,
                                     color = fg_col,
                                     angle = 90)) +
   coord_fixed() +
@@ -188,18 +175,12 @@ map <- ggplot() +
   scale_fill_identity() +
   labs(title = "",
        subtitle = "",
-       caption = "Graphics: Jeppe Vierø | <span style='font-family: \"Font Awesome 5 Brands\"'> &#xf099;</span> &emsp; <span style='font-family: \"Font Awesome 5 Brands\"'>&#xf09b; &emsp; &emsp; </span> jvieroe | #TidyTuesday 2022, Week 2") + 
+       caption = "") + 
   theme_void() +
   theme(panel.background = element_rect(fill = bgk_col,
                                         color = bgk_col),
         plot.background = element_rect(fill = bgk_col,
-                                       color = bgk_col),
-        plot.margin = margin(32, 0, 12, 0),
-        plot.title = element_text(color = fg_col, family = font1, size = 30,
-                                  hjust = .5, vjust = 0),
-        plot.subtitle = element_text(color = fg_col, family = font2, size = 10,
-                                     hjust = .5, vjust = 0),
-        plot.caption = ggtext::element_markdown(family = font2, color = fg_col, hjust = .05))
+                                       color = bgk_col))
 
 title <- ggplot() +
   annotate("text", x = 1, y = 1,
@@ -211,21 +192,36 @@ title <- ggplot() +
 
 subtitle <- ggplot() +
   annotate("text", x = 1, y = 1,
-           label = "Share of colonies affected by the Varroa mite and share of colonies lost,\nmeasured at the state-quarter level and averaged across the period 2015-2021.",
+           label = "Share of colonies affected by the Varroa mite and share of colonies lost,\nmeasured at the state-quarter level and averaged across the period 2015-2021",
            family = font2,
-           size = 3.5,
+           size = 4,
            color = fg_col) +
   theme_void()
 
+caption <- ggplot() +
+  annotate("richtext", x = 1, y = 1,
+           label = "Graphics: Jeppe Vierø | <span style='font-family: \"Font Awesome 5 Brands\"'> &#xf099;</span> &emsp; <span style='font-family: \"Font Awesome 5 Brands\"'>&#xf09b; &emsp; &emsp; </span> jvieroe | #TidyTuesday 2022, Week 2",
+           family = font2,
+           size = 3,
+           label.color = NA,
+           text.color = fg_col,
+           fill = NA, alpha = 1) +
+  theme_void()
+
+
 
 # ----- Combine plots
-ggdraw() +
+p <- ggdraw() +
   draw_plot(map, 0, 0, 1, 1) +
-  draw_plot(legend, 0.78, 0.02, 0.24, 0.24) +
-  draw_plot(title, 0, .42, 1, 1) +
-  draw_plot(subtitle, 0, .3, 1, 1)
+  draw_plot(legend, 0.75, 0.01, 0.24, 0.24) +
+  draw_plot(title, 0, .43, 1, 1) +
+  draw_plot(subtitle, 0, .33, 1, 1) +
+  draw_plot(caption, -0.24, -0.465, 1, 1) +
+  theme(plot.margin = margin(t = 45, r = 0, b = 30, l = 0))
 
-ggsave(plot = last_plot(),
+ggsave(plot = p,
        "2022/week_02/bees.png",
-       dpi = 600, scale = 1)
+       dpi = 600, scale = 1,
+       width = 10, height = 7)
+
 
