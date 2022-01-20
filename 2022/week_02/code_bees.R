@@ -155,10 +155,10 @@ legend <- ggplot() +
   labs(x = expression("More colonies affected" %->%""),
        y = expression("More colonies lost" %->%"")) +
   cowplot::theme_map() +
-  theme(axis.title.x = element_text(size = 5.5,
+  theme(axis.title.x = element_text(size = 7,
                                     family = font2,
                                     color = fg_col),
-        axis.title.y = element_text(size = 5.5,
+        axis.title.y = element_text(size = 7,
                                     family = font2,
                                     color = fg_col,
                                     angle = 90)) +
@@ -213,7 +213,7 @@ caption <- ggplot() +
 # ----- Combine plots
 p <- ggdraw() +
   draw_plot(map, 0, 0, 1, 1) +
-  draw_plot(legend, 0.75, 0.01, 0.18, 0.18) +
+  draw_plot(legend, 0.8, 0.01, 0.22, 0.22) +
   draw_plot(title, 0, .41, 1, 1) +
   draw_plot(subtitle, 0, .31, 1, 1) +
   draw_plot(caption, -0.25, -0.465, 1, 1) +
