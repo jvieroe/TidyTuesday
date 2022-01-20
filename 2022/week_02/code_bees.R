@@ -155,10 +155,10 @@ legend <- ggplot() +
   labs(x = expression("More colonies affected" %->%""),
        y = expression("More colonies lost" %->%"")) +
   cowplot::theme_map() +
-  theme(axis.title.x = element_text(size = 8.5,
+  theme(axis.title.x = element_text(size = 5.5,
                                     family = font2,
                                     color = fg_col),
-        axis.title.y = element_text(size = 8.5,
+        axis.title.y = element_text(size = 5.5,
                                     family = font2,
                                     color = fg_col,
                                     angle = 90)) +
@@ -213,15 +213,17 @@ caption <- ggplot() +
 # ----- Combine plots
 p <- ggdraw() +
   draw_plot(map, 0, 0, 1, 1) +
-  draw_plot(legend, 0.75, 0.01, 0.24, 0.24) +
-  draw_plot(title, 0, .43, 1, 1) +
-  draw_plot(subtitle, 0, .33, 1, 1) +
-  draw_plot(caption, -0.24, -0.465, 1, 1) +
-  theme(plot.margin = margin(t = 45, r = 0, b = 30, l = 0))
+  draw_plot(legend, 0.75, 0.01, 0.18, 0.18) +
+  draw_plot(title, 0, .41, 1, 1) +
+  draw_plot(subtitle, 0, .31, 1, 1) +
+  draw_plot(caption, -0.25, -0.465, 1, 1) +
+  theme(plot.margin = grid::unit(c(0, 0, 0, 0), "mm"))
 
 ggsave(plot = p,
        "2022/week_02/bees.png",
-       dpi = 600, scale = 1,
-       width = 10, height = 7)
+       dpi = 600,
+       width = 9, height = 6)
+
+knitr::plot_crop("2022/week_02/bees.png")
 
 
