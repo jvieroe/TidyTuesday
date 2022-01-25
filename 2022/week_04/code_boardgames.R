@@ -10,3 +10,8 @@ rm(tt)
 
 saveRDS(details, "2022/week_04/data/details.rds")
 saveRDS(ratings, "2022/week_04/data/ratings.rds")
+
+
+tt <- details %>% 
+  mutate(tmp = grepl("Green", boardgamedesigner, ignore.case = TRUE)) %>% 
+  filter(tmp)
