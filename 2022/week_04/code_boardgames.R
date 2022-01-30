@@ -19,8 +19,33 @@ details <- details %>%
   mutate(test = 1)
 
 df <- ratings %>% 
-  tidylog::left_join(., ratings,
+  tidylog::left_join(., details,
                      by = "id")
 
+df %>% 
+  select(c(name, primary))
+
+
 df <- df %>% 
-  filter(is.na(test))
+  arrange(yearpublished, year)
+
+
+df <- df %>% 
+  filter(yearpublished >= 1922) %>% 
+  filter(yearpublished <= 2021)
+
+
+df %>% 
+  group_by(yearpublished) %>% 
+  summarize(count = n()) %>% 
+  ggplot(., aes(yearpublished, count)) +
+  geom_line()
+
+
+df <- df %>% 
+  mutate(minpl = factor(minplayers))
+
+ggplot(df, aes(yearpublished, count)) +
+  geom_line() +
+  facet_wrap(.~ minplayers)
+
