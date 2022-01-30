@@ -12,8 +12,8 @@ library(tidyverse)
 # saveRDS(ratings, "2022/week_04/data/ratings.rds")
 
 
-details <- readRDS(details, "2022/week_04/data/details.rds")
-ratings <- readRDS(ratings, "2022/week_04/data/ratings.rds")
+details <- readRDS("2022/week_04/data/details.rds")
+ratings <- readRDS("2022/week_04/data/ratings.rds")
 
 
 tt <- details %>% 
