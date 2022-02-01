@@ -36,7 +36,7 @@ df <- df %>%
                 ~ str_replace(.x, "\\[|\\]", "")))
 
 df_long <- df %>% 
-  separate_rows(boardgameartist, sep = ",") %>% 
+  separate_rows(boardgamedesigner, sep = ",") %>% 
   arrange(yearpublished, boardgamedesigner)
 
 df_long <- df_long %>% 
