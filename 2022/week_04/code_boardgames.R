@@ -122,7 +122,12 @@ knizia <- plot_df_new %>%
   slice(which.max(games_produced))
 
 plot_df_new %>% 
-  slice(which.max(sum_owned))
+  slice(which.max(sum_owned)) %>% 
+  pull(sum_owned)
+
+konieczka <- plot_df_new %>% 
+  slice(which.max(mean_bayes))
+
 
 
 plot_df %>% filter(boardgamedesigner == "Reiner Knizia")
@@ -168,8 +173,28 @@ ggplot() +
                color = "white") +
   geom_richtext(data = knizia, aes(x = (log(games_produced)-0.80),
                                    y = (log(sum_owned))-1.1),
-                label = "Reiner Knizia is the most productive board<br>game designer with more than 300 games<br>
-                in the Board Games Geek database. He<br>also ranks #1 for ownership",
+                label = "Reiner Knizia is the most productive board<br>game designer with <span style='color:#4cd038'>329 games</span>
+                in the<br><b><i>Board Games Geek</i></b> database. He also<br>ranks #1 on ownership with a total of<br>almost <span style='color:#4cd038'>700,000</span>",
+                size = 3,
+                hjust = 0,
+                label.color = NA,
+                text.color = "white",
+                fill = NA, alpha = 1) +
+  geom_point(data = konieczka,
+             aes(x = log(games_produced), 
+                 y = log(sum_owned)),
+             fill = NA,
+             shape = 21,
+             size = 20, color = "white") +
+  geom_segment(data = konieczka, aes(x = log(games_produced), xend = log(games_produced),
+                                     y = (log(sum_owned) + 0.3), yend = log(sum_owned)+0.75),
+               color = "white") +
+  geom_segment(data = konieczka, aes(x = log(games_produced), xend = (log(games_produced) + 0.25),
+                                     y = (log(sum_owned) + 0.75), yend = log(sum_owned) + 0.75),
+               color = "white") +
+  geom_richtext(data = konieczka, aes(x = (log(games_produced) + 0.3),
+                                      y = (log(sum_owned)) + 0.8),
+                label = "Corey Konieczka has the highest Bayes Average rating (<span style='color:#4cd038'>6.81</span>) across<br>his 27 games in the <b><i>Board Games Geek</i></b> database",
                 size = 3,
                 hjust = 0,
                 label.color = NA,
@@ -200,7 +225,6 @@ ggplot() +
                                    size = 10),
         legend.position = "bottom",
         legend.text = element_text(color = "gray90"))
-
 
 
 ggsave(plot = last_plot(),
