@@ -2,7 +2,6 @@ library(tidytuesdayR)
 library(tidyverse)
 library(cowplot)
 library(ggtext)
-library(ggfx)
 library(MetBrewer)
 library(wesanderson)
 
@@ -118,36 +117,77 @@ plot_df_new <- plot_df_new %>%
                                  "Wargame",
                                  "Other")))
 
+
+knizia <- plot_df_new %>% 
+  slice(which.max(games_produced))
+
+plot_df_new %>% 
+  slice(which.max(sum_owned))
+
+
+plot_df %>% filter(boardgamedesigner == "Reiner Knizia")
+
 pal <- MetBrewer::met.brewer("Homer2")
 pal <- wes_palette("Zissou1")
 pal <- pal[c(2, 3, 5)]
 
-ggplot(plot_df_new, aes(x = log(games_produced), y = log(sum_owned))) +
-  # with_outer_glow(geom_point(aes(size = mean_bayes,
-  #                                color = cat), 
-  #                            alpha = 1),
-  #                 sigma = 10,
-  #                 expand = 2) +
-  geom_point(aes(size = mean_bayes,
-                 color = cat), 
-             alpha = .85) + 
-  # scale_color_manual(values = c("deeppink", "chartreuse2", "steelblue2"),
-  #                    name = "") +
+ggplot() +
+  geom_point(data = plot_df_new,
+             aes(x = log(games_produced), 
+                 y = log(sum_owned),
+                 size = mean_bayes,
+                 color = cat),
+             shape = 21,
+             alpha = 1) + 
+  geom_point(data = plot_df_new,
+             aes(x = log(games_produced), 
+                 y = log(sum_owned),
+                 size = mean_bayes,
+                 color = cat,
+                 fill = cat),
+             shape = 21,
+             alpha = .55) + 
   scale_color_manual(values = pal,
                      name = "") +
+  scale_fill_manual(values = pal,
+                    name = "") +
+  scale_size_continuous(range = c(1, 10)) +
   labs(x = "Games Produced (log)",
        y = "Ownership (log)") +
+  geom_point(data = knizia,
+             aes(x = log(games_produced), 
+                 y = log(sum_owned)),
+             fill = NA,
+             shape = 21,
+             size = 12, color = "white") +
+  geom_segment(data = knizia, aes(x = (log(games_produced)-0.07), xend = (log(games_produced)-0.25),
+                                 y = log(sum_owned), yend = log(sum_owned)),
+               color = "white") +
+  geom_segment(data = knizia, aes(x = (log(games_produced)-0.25), xend = (log(games_produced)-0.25),
+                                 y = log(sum_owned), yend = (log(sum_owned))-0.75),
+               color = "white") +
+  geom_richtext(data = knizia, aes(x = (log(games_produced)-0.80),
+                                   y = (log(sum_owned))-1.1),
+                label = "Reiner Knizia is the most productive board<br>game designer with more than 300 games<br>
+                in the Board Games Geek database. He<br>also ranks #1 for ownership",
+                size = 3,
+                hjust = 0,
+                label.color = NA,
+                text.color = "white",
+                fill = NA, alpha = 1) +
   theme_minimal() +
+  guides(size = "none",
+         color = guide_legend(override.aes = list(size = 6))) +
   theme(plot.title = ggtext::element_markdown(color = "white",
                                               size = 24),
         plot.subtitle = ggtext::element_markdown(color = "white",),
         plot.caption = ggtext::element_markdown(color = "gray90",),
-        panel.background = element_rect(fill = "gray20", color = "gray20"),
-        plot.background = element_rect(fill = "gray20", color = "gray20"),
+        panel.background = element_rect(fill = "gray15", color = "gray15"),
+        plot.background = element_rect(fill = "gray15", color = "gray15"),
         panel.grid.minor = element_line(color = "gray70",
-                                        size = .075),
+                                        size = .025),
         panel.grid.major = element_line(color = "gray70",
-                                        size = .15),
+                                        size = .1),
         axis.title.y = element_text(color = "gray90",
                                     size = 12,
                                     margin = ggplot2::margin(t = 0, r = 20, b = 0, l = 0)),
@@ -157,7 +197,9 @@ ggplot(plot_df_new, aes(x = log(games_produced), y = log(sum_owned))) +
         axis.text.y = element_text(color = "gray90",
                                    size = 10),
         axis.text.x = element_text(color = "gray90",
-                                   size = 10))
+                                   size = 10),
+        legend.position = "bottom",
+        legend.text = element_text(color = "gray90"))
 
 
 
