@@ -24,6 +24,6 @@ TBA
 
 ## Week 4: Board Games
 
-<a href="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_02/code_bees.R"> Code</a> • <a href="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_02/bees.png"> Download </a>
+<a href="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_04/code_boardgames.R"> Code</a> • <a href="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_04/boardgames.png"> Download </a>
 
-<img src="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_02/bees.png?raw=true" alt="" width="750">
+<img src="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_04/boardgames.png?raw=true" alt="" width="750">
