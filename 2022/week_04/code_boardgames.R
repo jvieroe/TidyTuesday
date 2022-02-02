@@ -2,7 +2,6 @@ library(tidytuesdayR)
 library(tidyverse)
 library(cowplot)
 library(ggtext)
-library(MetBrewer)
 library(wesanderson)
 
 tt <- tidytuesdayR::tt_load('2022-01-25')
