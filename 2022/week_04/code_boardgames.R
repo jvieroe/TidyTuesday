@@ -204,7 +204,7 @@ ggplot() +
 
 
 ggsave(plot = last_plot(),
-       filename = "2022/week_04/plot_boardgames.png",
+       filename = "2022/week_04/boardgames.png",
        dpi = 400)
 
 run <- plot_df_new %>% 
