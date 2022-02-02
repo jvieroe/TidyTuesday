@@ -5,32 +5,20 @@ library(ggtext)
 library(MetBrewer)
 library(wesanderson)
 
-# tt <- tidytuesdayR::tt_load('2022-01-25')
-# 
-# details <- tt[[1]]
-# ratings <- tt[[2]]
-# 
-# rm(tt)
-# 
-# saveRDS(details, "2022/week_04/data/details.rds")
-# saveRDS(ratings, "2022/week_04/data/ratings.rds")
+tt <- tidytuesdayR::tt_load('2022-01-25')
 
-
-details <- readRDS("2022/week_04/data/details.rds")
-ratings <- readRDS("2022/week_04/data/ratings.rds")
-
-
+details <- tt[[1]]
+ratings <- tt[[2]]
 
 df <- ratings %>% 
   tidylog::left_join(., details,
                      by = "id")
 
 
-rm(ratings, details)
+rm(ratings, details, tt)
 
 df <- df %>% 
   rownames_to_column()
-
 
 df <- df %>% 
   mutate(across(c(boardgameartist, boardgamedesigner, boardgamecategory),
@@ -67,21 +55,6 @@ df_designer <- df_long %>%
 
 plot_df <- df_designer %>% 
   slice_head(n = 100)
-
-
-
-ggplot(plot_df, aes(x = games_produced, y = sum_owned)) +
-  geom_point(aes(size = mean_bayes), alpha = .5)
-
-p1 <- last_plot()
-
-ggplot(plot_df, aes(x = log(games_produced), y = log(sum_owned))) +
-  geom_point(aes(size = mean_bayes,
-                 color = mean_year), 
-             alpha = .5)
-
-p2 <- last_plot()
-
 
 
 cat_df <- df_long %>% 
@@ -121,16 +94,8 @@ plot_df_new <- plot_df_new %>%
 knizia <- plot_df_new %>% 
   slice(which.max(games_produced))
 
-plot_df_new %>% 
-  slice(which.max(sum_owned)) %>% 
-  pull(sum_owned)
-
 konieczka <- plot_df_new %>% 
   slice(which.max(mean_bayes))
-
-
-
-plot_df %>% filter(boardgamedesigner == "Reiner Knizia")
 
 pal <- wes_palette("Zissou1")
 pal <- pal[c(5, 3, 2)]
