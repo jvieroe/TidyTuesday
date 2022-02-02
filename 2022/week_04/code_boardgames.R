@@ -108,11 +108,6 @@ text_col2 <- "gray90"
 bgk_col <- "gray15"
 grid_col <- "gray90"
 
-plot_df_new %>% 
-  group_by(boardgamecategory) %>% 
-  summarize(count = n()) %>% 
-  arrange(desc(count))
-
 ggplot() +
   geom_point(data = plot_df_new,
              aes(x = log(games_produced), 
@@ -219,6 +214,8 @@ ggplot() +
         legend.position = "bottom",
         legend.text = element_text(color = text_col2,
                                    family = font))
+
+
 
 ggsave(plot = last_plot(),
        filename = "2022/week_04/boardgames.png",
