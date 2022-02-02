@@ -184,11 +184,14 @@ ggplot() +
          color = guide_legend(override.aes = list(size = 6))) +
   theme(plot.title = ggtext::element_markdown(color = text_col1,
                                               size = 26,
-                                              family = font_title),
+                                              family = font_title,
+                                              hjust = 0,
+                                              margin = ggplot2::margin(t = 0, r = 0, b = 0, l = -40)),
         plot.subtitle = ggtext::element_markdown(color = text_col1,
                                                  size = 14,
                                                  family = font,
-                                                 margin = ggplot2::margin(t = 5, r = 0, b = 15, l = 0)),
+                                                 hjust = 0,
+                                                 margin = ggplot2::margin(t = 5, r = 0, b = 15, l = -40)),
         plot.caption = ggtext::element_markdown(color = text_col2,
                                                 size = 10,
                                                 family = font),
@@ -214,6 +217,7 @@ ggplot() +
                                    size = 10),
         legend.position = "bottom",
         legend.text = element_text(color = text_col2,
+                                   size = 12,
                                    family = font))
 
 
