@@ -158,7 +158,9 @@ ggplot() +
                     name = "") +
   scale_size_continuous(range = c(1, 12)) +
   labs(x = "Games Produced (log)",
-       y = "Ownership (log)") +
+       y = "Ownership (log)",
+       title = "X",
+       subtitle = "yyy") +
   geom_point(data = knizia,
              aes(x = log(games_produced), 
                  y = log(sum_owned)),
