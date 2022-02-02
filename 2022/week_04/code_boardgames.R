@@ -132,9 +132,11 @@ konieczka <- plot_df_new %>%
 
 plot_df %>% filter(boardgamedesigner == "Reiner Knizia")
 
-pal <- MetBrewer::met.brewer("Homer2")
 pal <- wes_palette("Zissou1")
-pal <- pal[c(2, 3, 5)]
+pal <- pal[c(5, 3, 2)]
+
+font <- "Ubuntu Mono"
+font_title <- "Righteous"
 
 ggplot() +
   geom_point(data = plot_df_new,
@@ -157,10 +159,8 @@ ggplot() +
   scale_fill_manual(values = pal,
                     name = "") +
   scale_size_continuous(range = c(1, 12)) +
-  labs(x = "Games Produced (log)",
-       y = "Ownership (log)",
-       title = "X",
-       subtitle = "yyy") +
+  scale_x_continuous(breaks = seq(3.5, 6, 0.5),
+                     labels = format(round(seq(3.5, 6, 0.5), 1), nsmall = 1)) +
   geom_point(data = knizia,
              aes(x = log(games_produced), 
                  y = log(sum_owned)),
@@ -175,8 +175,8 @@ ggplot() +
                color = "white") +
   geom_richtext(data = knizia, aes(x = (log(games_produced)-0.80),
                                    y = (log(sum_owned))-1.1),
-                label = "Reiner Knizia is the most productive board<br>game designer with <span style='color:#4cd038'>329 games</span>
-                in the<br><b><i>Board Games Geek</i></b> database. He also<br>ranks #1 on ownership with a total of<br>almost <span style='color:#4cd038'>700,000</span>",
+                label = "Reiner Knizia is the most productive board<br>game designer with <span style='color:#45f248'>329 games</span>
+                in the<br><b><i>Board Games Geek</i></b> database. He also<br>ranks #1 on ownership with a total of<br>almost <span style='color:#45f248'>700,000</span>",
                 size = 3,
                 hjust = 0,
                 label.color = NA,
@@ -196,7 +196,7 @@ ggplot() +
                color = "white") +
   geom_richtext(data = konieczka, aes(x = (log(games_produced) + 0.3),
                                       y = (log(sum_owned)) + 0.8),
-                label = "Corey Konieczka has the highest Bayes Average rating (<span style='color:#4cd038'>6.81</span>) across<br>his 27 games in the <b><i>Board Games Geek</i></b> database",
+                label = "Corey Konieczka has the highest Bayes Average rating (<span style='color:#45f248'>6.81</span>) across<br>his 27 games in the <b><i>Board Games Geek</i></b> database",
                 size = 3,
                 hjust = 0,
                 label.color = NA,
@@ -206,9 +206,13 @@ ggplot() +
   guides(size = "none",
          color = guide_legend(override.aes = list(size = 6))) +
   theme(plot.title = ggtext::element_markdown(color = "white",
-                                              size = 24),
-        plot.subtitle = ggtext::element_markdown(color = "white",),
-        plot.caption = ggtext::element_markdown(color = "gray90",),
+                                              size = 24,
+                                              family = font_title),
+        plot.subtitle = ggtext::element_markdown(color = "white",
+                                                 family = font,
+                                                 margin = ggplot2::margin(t = 5, r = 0, b = 10, l = 0)),
+        plot.caption = ggtext::element_markdown(color = "gray90",
+                                                family = font),
         panel.background = element_rect(fill = "gray15", color = "gray15"),
         plot.background = element_rect(fill = "gray15", color = "gray15"),
         panel.grid.minor = element_line(color = "gray70",
@@ -216,17 +220,27 @@ ggplot() +
         panel.grid.major = element_line(color = "gray70",
                                         size = .1),
         axis.title.y = element_text(color = "gray90",
+                                    family = font,
                                     size = 12,
                                     margin = ggplot2::margin(t = 0, r = 20, b = 0, l = 0)),
         axis.title.x = element_text(color = "gray90",
+                                    family = font,
                                     size = 12,
                                     margin = ggplot2::margin(t = 20, r = 0, b = 0, l = 0)),
         axis.text.y = element_text(color = "gray90",
+                                   family = font,
                                    size = 10),
         axis.text.x = element_text(color = "gray90",
+                                   family = font,
                                    size = 10),
         legend.position = "bottom",
-        legend.text = element_text(color = "gray90"))
+        legend.text = element_text(color = "gray90",
+                                   family = font)) +
+  labs(x = "Games Produced (log)",
+       y = "Ownership (log)",
+       title = "<span style='color:#45f248'>Reiner Knizia</span>: the GOAT of board game design",
+       subtitle = "The 100 most productive board game designers of all time and the board game category<br>
+       most frequently associated with their games") 
 
 
 ggsave(plot = last_plot(),
