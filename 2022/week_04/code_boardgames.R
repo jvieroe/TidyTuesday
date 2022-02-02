@@ -190,6 +190,7 @@ ggplot() +
                                                  family = font,
                                                  margin = ggplot2::margin(t = 5, r = 0, b = 15, l = 0)),
         plot.caption = ggtext::element_markdown(color = text_col2,
+                                                size = 10,
                                                 family = font),
         panel.background = element_rect(fill = bgk_col, color = bgk_col),
         plot.background = element_rect(fill = bgk_col, color = bgk_col),
