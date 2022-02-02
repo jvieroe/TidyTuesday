@@ -241,7 +241,8 @@ ggplot() +
        title = "<span style='color:#45f248'>Reiner Knizia</span>: the GOAT of board game design",
        subtitle = "The 100 most productive board game designers of all time and the board game category<br>
        most frequently associated with their games. Across the board (pun intended) the most<br>frequent categories are
-       <span style='color:#F21A00'>'Card Game'</span> and <span style='color:#EBCC2A'>'Wargame'</span>") 
+       <span style='color:#F21A00'>'Card Game'</span> and <span style='color:#EBCC2A'>'Wargame'</span>",
+       caption = "Graphics: Jeppe Vierø | <span style='font-family: \"Font Awesome 5 Brands\"'> &#xf099;</span> &emsp; <span style='font-family: \"Font Awesome 5 Brands\"'>&#xf09b; &emsp; &emsp; </span> jvieroe | #TidyTuesday 2022, Week 4 | Data: Board Games Geek (via Kaggle)") 
 
 ggsave(plot = last_plot(),
        filename = "2022/week_04/boardgames.png",
