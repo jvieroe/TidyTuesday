@@ -151,7 +151,7 @@ ggplot() +
                      name = "") +
   scale_fill_manual(values = pal,
                     name = "") +
-  scale_size_continuous(range = c(1, 10)) +
+  scale_size_continuous(range = c(1, 12)) +
   labs(x = "Games Produced (log)",
        y = "Ownership (log)") +
   geom_point(data = knizia,
@@ -159,7 +159,7 @@ ggplot() +
                  y = log(sum_owned)),
              fill = NA,
              shape = 21,
-             size = 12, color = "white") +
+             size = 14, color = "white") +
   geom_segment(data = knizia, aes(x = (log(games_produced)-0.07), xend = (log(games_produced)-0.25),
                                  y = log(sum_owned), yend = log(sum_owned)),
                color = "white") +
