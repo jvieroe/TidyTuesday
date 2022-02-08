@@ -3,6 +3,7 @@ library(janitor)
 library(cowplot)
 library(ggtext)
 library(wesanderson)
+library(MetBrewer)
 
 breed_traits <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-02-01/breed_traits.csv')
 trait_description <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-02-01/trait_description.csv')
@@ -86,16 +87,18 @@ test <- df %>%
   filter(coat_length == "Long")
 
 ggplot(test) +
-  geom_col(aes(x = seq_, y = value)) +
+  geom_col(aes(x = seq_, y = value),
+           fill = "blue", alpha = .1) +
   coord_polar() +
-  #theme_void() +
-  #ylim(0, 5) +
-  #xlim(0, 13) +
-  ylim(-0.25, 5.5)
-  scale_y_continuous(limits = c(0, 5),
+  theme_void() +
+  geom_segment(data = tibble(y = c(1, 3, 5)),
+               aes(x = 0, xend = 14.5,
+                   y = y, yend = y),
+               linetype = "97",
+               size = .25) +
+  scale_y_continuous(limits = c(-0.25, 5),
                      breaks = seq(1, 5, 1),
-                     labels = seq(1, 5, 1)) +
-  theme(panel.grid.major.y = element_line(size = .15))
+                     labels = seq(1, 5, 1))
 
 ggplot(df) +
   geom_col(aes(x = seq_, y = value)) +
