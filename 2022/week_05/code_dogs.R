@@ -80,6 +80,7 @@ df <- df %>%
   mutate(seq_ = row_number()) %>% 
   ungroup()
 
+tabyl(df$name)
 
 test <- df %>% 
   filter(coat_length == "Long")
@@ -87,10 +88,18 @@ test <- df %>%
 ggplot(test) +
   geom_col(aes(x = seq_, y = value)) +
   coord_polar() +
-  theme_void() +
+  #theme_void() +
+  #ylim(0, 5) +
+  #xlim(0, 13) +
+  ylim(-0.25, 5.5)
+  scale_y_continuous(limits = c(0, 5),
+                     breaks = seq(1, 5, 1),
+                     labels = seq(1, 5, 1)) +
   theme(panel.grid.major.y = element_line(size = .15))
 
 ggplot(df) +
   geom_col(aes(x = seq_, y = value)) +
   coord_polar() +
+  theme_void() +
+  theme(panel.grid.major.y = element_line(size = .15)) +
   facet_wrap(~ breed, ncol = 2)
