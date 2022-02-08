@@ -84,18 +84,23 @@ df <- df %>%
 tabyl(df$name)
 
 test <- df %>% 
+  arrange(name,
+          value,
+          breed)
+
+test <- df %>% 
   filter(coat_length == "Long")
 
 ggplot(test) +
-  geom_col(aes(x = seq_, y = value),
-           fill = "blue", alpha = .1) +
-  coord_polar() +
-  theme_void() +
   geom_segment(data = tibble(y = c(1, 3, 5)),
                aes(x = 0, xend = 14.5,
                    y = y, yend = y),
                linetype = "97",
                size = .25) +
+  geom_col(aes(x = seq_, y = value),
+           fill = "blue", alpha = .75) +
+  coord_polar() +
+  theme_void() +
   scale_y_continuous(limits = c(-0.25, 5),
                      breaks = seq(1, 5, 1),
                      labels = seq(1, 5, 1))
