@@ -166,6 +166,7 @@ ggplot(df) +
                              ncol = 2))
 
 
+
 ggsave(plot = last_plot(),
        "2022/week_05/dogs.png",
        dpi = 400,
