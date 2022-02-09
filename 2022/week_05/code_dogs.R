@@ -27,8 +27,6 @@ df <- breed_traits %>%
 df <- df %>% 
   mutate(coat_length = str_squish(coat_length))
 
-rm(list = setdiff(ls(), "df"))
-
 df <- df %>% 
   filter(!coat_length %in% c("Plott Hounds"))
 
@@ -203,5 +201,3 @@ ggsave(plot = last_plot(),
        dpi = 400,
        width = 9,
        height = 9)
-
-#knitr::plot_crop("dogs.png")
