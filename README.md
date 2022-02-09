@@ -27,3 +27,10 @@ TBA
 <a href="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_04/code_boardgames.R"> Code</a> • <a href="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_04/boardgames.png"> Download </a>
 
 <img src="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_04/boardgames.png?raw=true" alt="" width="750">
+
+
+## Week 5: Dog breeds
+
+<a href="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_05/code_dogs.R"> Code</a> • <a href="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_05/dogs.png"> Download </a>
+
+<img src="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_05/dogs.png?raw=true" alt="" width="750">
