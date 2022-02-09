@@ -30,10 +30,6 @@ df <- df %>%
 df <- df %>% 
   filter(!coat_length %in% c("Plott Hounds"))
 
-df %>% 
-  select(ends_with("_rank")) %>% 
-  names(.)
-
 df <- df %>% 
   rowwise() %>% 
   mutate(rank_mean = mean(c_across(ends_with("_rank")),
@@ -41,18 +37,8 @@ df <- df %>%
   ungroup() %>% 
   select(-ends_with("_rank"))
 
-tabyl(df$breed)
-
-
-# df <- df %>% 
-#   group_by(coat_length) %>% 
-#   arrange(desc(rank_mean)) %>% 
-#   slice_tail(n = 1) %>% 
-#   ungroup()
-
 df <- df %>% 
   filter(grepl("schnauzer", breed, ignore.case = TRUE))
-
 
 df <- df %>% 
   select(breed,
@@ -79,11 +65,9 @@ df <- df %>%
 
 
 
-
 df <- df %>% 
   filter(name %in% c("coat_grooming_frequency",
                      "shedding_level",
-                     #"adaptability_level",
                      "trainability_level",
                      "playfullness_level",
                      "energy_level",
@@ -95,7 +79,6 @@ df <- df %>%
 df <- df %>% 
   mutate(name = case_when(name == "coat_grooming_frequency" ~ "Grooming frequency",
                           name == "shedding_level" ~ "Shedding",
-                          #name == "adaptability_level" ~ "Adaptability",
                           name == "trainability_level" ~ "Trainability",
                           name == "playfullness_level" ~ "Playfullness",
                           name == "energy_level" ~ "Energy",
@@ -111,30 +94,17 @@ df <- df %>%
   ungroup()
 
 
-
 n_cats <- length(unique(df$name))
 
 pal <- met.brewer("Renoir", type = "discrete")
 txt_col <- pal[1]
 pal <- pal[c(2:8)]
 
-
 bkg_col <- "#fdfad4"
 bkg_col <- lighten(bkg_col, 0.8)
 
 title_font <- "Permanent Marker"
 txt_font <- "Inconsolata"
-
-# library(showtext)
-# showtext_auto()
-# library(sysfonts)
-# font_add_google(txt_font)
-# font_add_google(title_font)
-
-
-# library(extrafont)
-# extrafont::font_import(paths = "/Users/jeppeviero/Library/Mobile Documents/com~apple~CloudDocs/fonts",
-#                        pattern = ".ttf")
 
 
 ggplot(df) +
