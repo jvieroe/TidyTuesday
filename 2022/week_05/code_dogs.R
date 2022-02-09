@@ -4,6 +4,8 @@ library(cowplot)
 library(ggtext)
 library(wesanderson)
 library(MetBrewer)
+library(colorspace)
+#library(showtext)
 
 breed_traits <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-02-01/breed_traits.csv')
 trait_description <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-02-01/trait_description.csv')
@@ -12,7 +14,7 @@ breed_rank_all <- readr::read_csv('https://raw.githubusercontent.com/rfordatasci
 breed_traits <- breed_traits %>% 
   clean_names() %>% 
   mutate(breed = str_squish(breed)) %>% 
-  mutate(breed = str_replace(breed, pattern = "’", " ")) #%>% .[, c(1:5, 7, 10:16)]
+  mutate(breed = str_replace(breed, pattern = "'", " ")) #%>% .[, c(1:5, 7, 10:16)]
 
 breed_rank_all <- breed_rank_all %>% 
   clean_names() %>% 
@@ -42,14 +44,18 @@ df <- df %>%
   ungroup() %>% 
   select(-ends_with("_rank"))
 
+tabyl(df$breed)
+
+
+# df <- df %>% 
+#   group_by(coat_length) %>% 
+#   arrange(desc(rank_mean)) %>% 
+#   slice_tail(n = 1) %>% 
+#   ungroup()
 
 df <- df %>% 
-  group_by(coat_length) %>% 
-  arrange(desc(rank_mean)) %>% 
-  slice_tail(n = 1) %>% 
-  ungroup()
+  filter(grepl("schnauzer", breed, ignore.case = TRUE))
 
-names(df)
 
 df <- df %>% 
   select(breed,
@@ -76,38 +82,146 @@ df <- df %>%
 
 
 
+
 df <- df %>% 
+  filter(name %in% c("coat_grooming_frequency",
+                     "shedding_level",
+                     #"adaptability_level",
+                     "trainability_level",
+                     "playfullness_level",
+                     "energy_level",
+                     "affectionate_with_family",
+                     "good_with_young_children",
+                     "good_with_other_dogs"))
+
+
+df <- df %>% 
+  mutate(name = case_when(name == "coat_grooming_frequency" ~ "Grooming frequency",
+                          name == "shedding_level" ~ "Shedding",
+                          #name == "adaptability_level" ~ "Adaptability",
+                          name == "trainability_level" ~ "Trainability",
+                          name == "playfullness_level" ~ "Playfullness",
+                          name == "energy_level" ~ "Energy",
+                          name == "affectionate_with_family" ~ "Affectionate w/ family",
+                          name == "good_with_young_children" ~ "Good w/ young children",
+                          name == "good_with_other_dogs" ~ "Good with dogs"))
+
+
+df <- df %>% 
+  arrange(breed, name) %>% 
   group_by(breed) %>% 
   mutate(seq_ = row_number()) %>% 
   ungroup()
 
-tabyl(df$name)
 
-test <- df %>% 
-  arrange(name,
-          value,
-          breed)
 
-test <- df %>% 
-  filter(coat_length == "Long")
+n_cats <- length(unique(df$name))
 
-ggplot(test) +
-  geom_segment(data = tibble(y = c(1, 3, 5)),
-               aes(x = 0, xend = 14.5,
-                   y = y, yend = y),
-               linetype = "97",
-               size = .25) +
-  geom_col(aes(x = seq_, y = value),
-           fill = "blue", alpha = .75) +
-  coord_polar() +
-  theme_void() +
-  scale_y_continuous(limits = c(-0.25, 5),
-                     breaks = seq(1, 5, 1),
-                     labels = seq(1, 5, 1))
+pal <- met.brewer("Renoir", type = "discrete")
+txt_col <- pal[1]
+pal <- pal[c(2:8)]
+
+
+bkg_col <- "#fdfad4"
+bkg_col <- lighten(bkg_col, 0.8)
+
+title_font <- "Supermercado One"
+title_font <- "Permanent Marker"
+txt_font <- "Inconsolata"
+# showtext_auto()
+# font_add_google(txt_font)
+# font_add_google(title_font)
 
 ggplot(df) +
-  geom_col(aes(x = seq_, y = value)) +
+  geom_segment(data = tibble(y = c(1, 3, 5)),
+               aes(x = 0, xend = (n_cats + 0.5),
+                   y = y, yend = y),
+               linetype = "97",
+               color = "grey70",
+               size = .25) +
+  geom_col(aes(x = seq_, y = value,
+               fill = str_wrap(name,
+                               15)),
+           alpha = .75) +
   coord_polar() +
   theme_void() +
-  theme(panel.grid.major.y = element_line(size = .15)) +
-  facet_wrap(~ breed, ncol = 2)
+  scale_fill_manual(values = pal,
+                    name = "") +
+  scale_y_continuous(limits = c(-0.5, 5),
+                     breaks = seq(1, 5, 1),
+                     labels = seq(1, 5, 1)) +
+  facet_wrap(~ breed, ncol = 2,
+             strip.position = "top") +
+  labs(title = "Schnauzers",
+       subtitle = stringr::str_wrap(
+         "The three types (or sizes) of Schnauzers and their characteristics and qualities as rated by the American Kennel Club",
+         60),
+       caption = "Graphics: Jeppe Vierø | <span style='font-family: \"Font Awesome 5 Brands\"'> &#xf099;</span> &emsp; <span style='font-family: \"Font Awesome 5 Brands\"'>&#xf09b; &emsp; &emsp; </span> jvieroe | #TidyTuesday 2022, Week 5 | Data: American Kennel Club") +
+  theme(plot.title = ggtext::element_markdown(size = 76,
+                                              color = txt_col,
+                                              family = title_font),
+        plot.subtitle = element_text(size = 20,
+                                     color = txt_col,
+                                     family = txt_font,
+                                     lineheight = .7,
+                                     margin = margin(t = 7, b = 10, unit = "pt")),
+        plot.caption = ggtext::element_markdown(size = 10,
+                                                color = txt_col,
+                                                family = txt_font,
+                                                hjust = -0.75),
+        legend.position = c(.9, .285),
+        legend.spacing.x = unit(0.1, "cm"),
+        legend.spacing.y = unit(0.5, "cm"),
+        legend.text = element_text(size = 12,
+                                   color = txt_col,
+                                   family = txt_font,
+                                   lineheight = .7,
+                                   margin = margin(r = 10, unit = "pt")),
+        panel.spacing = unit(1, "cm"),
+        strip.text = element_text(size = 24,
+                                  color = txt_col,
+                                  family = txt_font,
+                                  face = "bold"),
+        panel.background = element_rect(fill = bkg_col,
+                                        color = bkg_col),
+        plot.background = element_rect(fill = bkg_col,
+                                       color = bkg_col),
+        plot.margin = grid::unit(c(t = 0, r = 0, b = 2.5, l = 0), "mm")) +
+  guides(fill = guide_legend(byrow = TRUE,
+                             ncol = 2))
+
+
+ggsave(plot = last_plot(),
+       "2022/week_05/dogs.png")
+
+# <i class="fas fa-dog"></i>
+# + paw
+# https://github.com/FortAwesome/Font-Awesome/issues/4755
+
+
+
+#knitr::plot_crop("dogs.png")
+
+df2 <- df %>%
+  filter(grepl("miniature", breed, ignore.case = TRUE))
+
+ggplot(df2) +
+  geom_segment(data = tibble(y = c(1, 3, 5)),
+               aes(x = 0, xend = (n_cats + 0.5),
+                   y = y, yend = y),
+               linetype = "97",
+               color = "grey70",
+               size = .5) +
+  geom_col(aes(x = seq_, y = value,
+               fill = name),
+           alpha = .99) +
+  coord_polar() +
+  theme_void() +
+  scale_fill_manual(values = pal,
+                    name = "") +
+  scale_y_continuous(limits = c(-0.5, 5),
+                     breaks = seq(1, 5, 1),
+                     labels = seq(1, 5, 1)) +
+  facet_wrap(~ breed, ncol = 2,
+             strip.position = "bottom") +
+  theme(legend.position = "bottom")
