@@ -5,7 +5,6 @@ library(ggtext)
 library(wesanderson)
 library(MetBrewer)
 library(colorspace)
-#library(showtext)
 
 breed_traits <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-02-01/breed_traits.csv')
 trait_description <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-02-01/trait_description.csv')
@@ -125,12 +124,20 @@ pal <- pal[c(2:8)]
 bkg_col <- "#fdfad4"
 bkg_col <- lighten(bkg_col, 0.8)
 
-title_font <- "Supermercado One"
 title_font <- "Permanent Marker"
 txt_font <- "Inconsolata"
+
+# library(showtext)
 # showtext_auto()
+# library(sysfonts)
 # font_add_google(txt_font)
 # font_add_google(title_font)
+
+
+# library(extrafont)
+# extrafont::font_import(paths = "/Users/jeppeviero/Library/Mobile Documents/com~apple~CloudDocs/fonts",
+#                        pattern = ".ttf")
+
 
 ggplot(df) +
   geom_segment(data = tibble(y = c(1, 3, 5)),
@@ -154,22 +161,23 @@ ggplot(df) +
              strip.position = "top") +
   labs(title = "Schnauzers",
        subtitle = stringr::str_wrap(
-         "The three types (or sizes) of Schnauzers and their characteristics and qualities as rated by the American Kennel Club",
-         60),
+         "The three types (or sizes) of Schnauzers and their characteristics and qualities as rated by the American Kennel Club on a 1-5 scale",
+         50),
        caption = "Graphics: Jeppe Vierø | <span style='font-family: \"Font Awesome 5 Brands\"'> &#xf099;</span> &emsp; <span style='font-family: \"Font Awesome 5 Brands\"'>&#xf09b; &emsp; &emsp; </span> jvieroe | #TidyTuesday 2022, Week 5 | Data: American Kennel Club") +
   theme(plot.title = ggtext::element_markdown(size = 76,
                                               color = txt_col,
-                                              family = title_font),
-        plot.subtitle = element_text(size = 20,
+                                              family = title_font,
+                                              margin = margin(t = 10, unit = "pt")),
+        plot.subtitle = element_text(size = 18,
                                      color = txt_col,
                                      family = txt_font,
                                      lineheight = .7,
-                                     margin = margin(t = 7, b = 10, unit = "pt")),
+                                     margin = margin(t = 7, b = 22, unit = "pt")),
         plot.caption = ggtext::element_markdown(size = 10,
                                                 color = txt_col,
                                                 family = txt_font,
-                                                hjust = -0.75),
-        legend.position = c(.9, .285),
+                                                hjust = 4),
+        legend.position = c(.825, .285),
         legend.spacing.x = unit(0.1, "cm"),
         legend.spacing.y = unit(0.5, "cm"),
         legend.text = element_text(size = 12,
@@ -177,51 +185,23 @@ ggplot(df) +
                                    family = txt_font,
                                    lineheight = .7,
                                    margin = margin(r = 10, unit = "pt")),
-        panel.spacing = unit(1, "cm"),
-        strip.text = element_text(size = 24,
+        panel.spacing.x = unit(2, "cm"),
+        strip.text = element_text(size = 18,
                                   color = txt_col,
-                                  family = txt_font,
-                                  face = "bold"),
+                                  family = txt_font),
         panel.background = element_rect(fill = bkg_col,
                                         color = bkg_col),
         plot.background = element_rect(fill = bkg_col,
                                        color = bkg_col),
-        plot.margin = grid::unit(c(t = 0, r = 0, b = 2.5, l = 0), "mm")) +
+        plot.margin = grid::unit(c(t = 0, r = -0, b = 2.5, l = -0), "mm")) +
   guides(fill = guide_legend(byrow = TRUE,
                              ncol = 2))
 
 
 ggsave(plot = last_plot(),
-       "2022/week_05/dogs.png")
-
-# <i class="fas fa-dog"></i>
-# + paw
-# https://github.com/FortAwesome/Font-Awesome/issues/4755
-
-
+       "2022/week_05/dogs.png",
+       dpi = 400,
+       width = 9,
+       height = 9)
 
 #knitr::plot_crop("dogs.png")
-
-df2 <- df %>%
-  filter(grepl("miniature", breed, ignore.case = TRUE))
-
-ggplot(df2) +
-  geom_segment(data = tibble(y = c(1, 3, 5)),
-               aes(x = 0, xend = (n_cats + 0.5),
-                   y = y, yend = y),
-               linetype = "97",
-               color = "grey70",
-               size = .5) +
-  geom_col(aes(x = seq_, y = value,
-               fill = name),
-           alpha = .99) +
-  coord_polar() +
-  theme_void() +
-  scale_fill_manual(values = pal,
-                    name = "") +
-  scale_y_continuous(limits = c(-0.5, 5),
-                     breaks = seq(1, 5, 1),
-                     labels = seq(1, 5, 1)) +
-  facet_wrap(~ breed, ncol = 2,
-             strip.position = "bottom") +
-  theme(legend.position = "bottom")
