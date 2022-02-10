@@ -32,14 +32,22 @@ airmen_sum <- airmen %>%
   ungroup()
 
 
-ggplot(airmen_sum) +
-  geom_density(aes(x = date, fill = pilot_type),
-               alpha = .3)
+airmen_sum_2 <- airmen %>% 
+  filter(!is.na(date)) %>% 
+  mutate(t = 1) %>% 
+  group_by(date) %>% 
+  summarize(sum = n()) %>% 
+  mutate(sum_count = cumsum(sum)) %>% 
+  ungroup()
 
-tabyl(airmen$pilot_type)
 
 ggplot(airmen_sum) +
   geom_line(aes(x = date, y = sum_count, color = pilot_type))
+
+
+ggplot(airmen_sum_2) +
+  geom_line(aes(x = date, y = sum_count))
+
 
 dubois <- c("#e23653",
             "#fcb800",
