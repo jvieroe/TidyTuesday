@@ -4,49 +4,107 @@ library(lubridate)
 library(ggstream)
 library(scales)
 
-
+rm(list = ls())
 
 airmen <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-02-08/airmen.csv')
 
-class(airmen$graduation_date)
+airmen <- airmen %>%
+  mutate(graduation_date = ymd(graduation_date)) %>%
+  arrange(graduation_date)
 
-airmen$graduation_date[1]
 
 airmen <- airmen %>% 
-  mutate(date = ymd(graduation_date)) %>% 
-  arrange(date)
+  separate_rows(aerial_victory_credits,
+                sep = ";")
 
 airmen <- airmen %>% 
-  mutate(pilot_type = ifelse(pilot_type == "Liason pilot",
-                             "Liaison pilot",
-                             pilot_type))
+  mutate(date = sub(".*on ", "", aerial_victory_credits)) %>% 
+  mutate(date = mdy(date))
+
+airmen <- airmen %>% 
+  separate_rows(aerial_victory_credits,
+                sep = "and")
+
+airmen <- airmen %>% 
+  mutate(aerial_victory_credits = str_squish(aerial_victory_credits))
 
 
+airmen <- airmen %>% 
+  mutate(tally = sub(".*Downed ", "", aerial_victory_credits)) %>% 
+  mutate(tally = str_sub(tally, 1, 5)) %>% 
+  mutate(tally = str_replace(tally,
+                             pattern = " 1/2",
+                             replacement = ".5")) %>% 
+  mutate(tally = str_replace(tally,
+                             pattern = "1/2",
+                             replacement = "0.5")) %>% 
+  mutate(tally_num = parse_number(tally))
 
-airmen_sum <- airmen %>% 
-  filter(!is.na(date)) %>% 
-  mutate(t = 1) %>% 
-  group_by(date, pilot_type) %>% 
-  summarize(sum = n()) %>% 
-  mutate(sum_count = cumsum(sum)) %>% 
+airmen <- airmen %>% 
+  arrange(graduation_date)
+
+test <- airmen %>% 
+  filter(!is.na(tally_num)) %>% 
+  mutate(sum = sum(tally_num))
+
+tabyl(test$class)
+
+airmen_sum <- airmen %>%
+  filter(!is.na(date)) %>%
+  group_by(date) %>%
+  summarize(tally_num = sum(tally_num, na.rm = TRUE)) %>%
   ungroup()
 
 
-airmen_sum_2 <- airmen %>% 
-  filter(!is.na(date)) %>% 
-  mutate(t = 1) %>% 
-  group_by(date) %>% 
-  summarize(sum = n()) %>% 
-  mutate(sum_count = cumsum(sum)) %>% 
+
+date_range_min <- airmen %>% 
+  arrange(graduation_date) %>% 
+  slice(which.min(graduation_date)) %>% 
+  select(date = graduation_date)
+
+date_range_max_1 <- airmen %>% 
+  arrange(graduation_date) %>% 
+  slice(which.max(graduation_date)) %>% 
+  select(date = graduation_date)
+
+date_range_max_2 <- airmen_sum %>% 
+  arrange(date) %>% 
+  slice(which.max(date)) %>% 
+  select(date)
+
+date_range_max <- rbind(date_range_max_1,
+                        date_range_max_2) %>% 
+  slice(which.max(date))
+
+date_range <- rbind(date_range_min,
+                    date_range_max)
+
+date_range <- date_range %>% 
+  complete(., date = full_seq(date, 1)) %>% 
+  mutate(tmp = 0)
+
+plot_df <- 
+  tidylog::left_join(date_range,
+                     airmen_sum,
+                     by = "date")
+
+plot_df <- plot_df %>% 
+  rowwise() %>% 
+  mutate(tally = sum(c(tmp, tally_num),
+                     na.rm = TRUE)) %>% 
   ungroup()
 
+plot_df <- plot_df %>% 
+  mutate(tally_cs = cumsum(tally))
 
-ggplot(airmen_sum) +
-  geom_line(aes(x = date, y = sum_count, color = pilot_type))
+ggplot(plot_df) +
+  geom_line(aes(x = date, y = tally_cs))
 
 
-ggplot(airmen_sum_2) +
-  geom_line(aes(x = date, y = sum_count))
+ggplot(plot_df) +
+  geom_area(aes(x = date, y = tally_cs))
+
+
 
 
 dubois <- c("#e23653",
