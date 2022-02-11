@@ -194,7 +194,7 @@ ggplot(plot_df) +
                    y = min_y, yend = min_y),
                size = 0.2) +
   scale_fill_manual(values = dubois,
-                    name = "AIRCRAFT CLASS SERIES") +
+                    name = "TUSKEGEE AIRMEN AIRCRAFT CLASS SERIES") +
   scale_y_continuous(breaks = seq(0, 120, 20),
                      labels = seq(0, 120, 20),
                      limits = c(0, 120)) +
