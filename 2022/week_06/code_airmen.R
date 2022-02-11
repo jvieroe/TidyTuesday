@@ -132,19 +132,25 @@ ggplot(plot_df) +
 
 
 # line segments
-min_x <- plot_df %>% 
+plot_df_comb <- plot_df %>% 
+  group_by(date) %>% 
+  summarize(tally_cs = sum(tally_cs)) %>% 
+  ungroup()
+
+
+min_x <- plot_df_comb %>% 
   slice(which.min(date)) %>% 
   pull(date)
 
-max_x <- plot_df %>% 
+max_x <- plot_df_comb %>% 
   slice(which.max(date)) %>% 
   pull(date)
 
-min_y <- plot_df %>% 
+min_y <- plot_df_comb %>% 
   slice(which.min(tally_cs)) %>% 
   pull(tally_cs)
 
-max_y <- plot_df %>% 
+max_y <- plot_df_comb %>% 
   slice(which.max(tally_cs)) %>% 
   pull(tally_cs)
 
@@ -171,7 +177,7 @@ grid_stroke = 0.075
 
 # fonts
 font_regular <- "Chakra Petch"
-font_title = "Orbitron"
+font_title = "Quantico"
 font_col <- "#393433"
 
 
@@ -193,9 +199,9 @@ ggplot(plot_df) +
                      labels = seq(0, 120, 20),
                      limits = c(0, 120)) +
   scale_x_date(date_minor_breaks = "1 year") +
-  labs(title = "THE TUSKEGEE AIRMEN",
+  labs(title = "AIRCRAFTS DOWNED BY THE TUSKEGEE AIRMEN",
        y = "CUMULATIVE SUM OF AIRCRAFTS DOWNED",
-       caption = "GRAPHICS: Jeppe Vierø | <span style='font-family: \"Font Awesome 5 Brands\"'> &#xf099;</span> &emsp; <span style='font-family: \"Font Awesome 5 Brands\"'>&#xf09b; &emsp; &emsp; </span> jvieroe | #TidyTuesday 2022, Week 6 | DATA: Commemorative Airforce (CAF) by way of the VA-TUG") +
+       caption = "GRAPHICS: Jeppe Vierø | <span style='font-family: \"Font Awesome 5 Brands\"'> &#xf099;</span> &emsp; <span style='font-family: \"Font Awesome 5 Brands\"'>&#xf09b; &emsp; &emsp; </span> jvieroe | #TuskegeeAirmenChallenge, #DuBoisChallenge2022, #TidyTuesday 2022, Week 6 | <br>DATA: Commemorative Airforce (CAF) by way of the VA-TUG") +
   theme_minimal() +
   theme(plot.background = element_rect(fill = background,
                                        color = background),
@@ -205,31 +211,36 @@ ggplot(plot_df) +
         panel.grid.minor = element_blank(),
         axis.text.x = element_text(family = font_regular,
                                    color = font_col,
-                                   size = 9),
+                                   size = 9,
+                                   vjust = 5),
         legend.text = element_text(family = font_regular,
                                    color = font_col),
         legend.title = element_text(family = font_regular,
-                                    color = font_col),
+                                    color = font_col,
+                                    size = 12),
         axis.text.y = element_text(family = font_regular,
                                    color = font_col,
                                    size = 9),
         axis.title.y = element_text(family = font_regular,
                                     color = font_col,
+                                    size = 12,
                                     vjust = 5,
                                     hjust = 0.5),
         axis.title.x = element_blank(),
         plot.title = element_text(family = font_title,
-                                  size = 35,
+                                  size = 33,
                                   color = font_col),
         plot.caption = ggtext::element_markdown(size = 10,
                                                 color = font_col,
                                                 family = font_regular,
                                                 hjust = 0,
-                                                margin = ggplot2::margin(t = 30, 
+                                                margin = ggplot2::margin(t = 40, 
                                                                          unit = "pt")),
         legend.position = "bottom",
-        plot.margin = ggplot2::margin(l = 20, b = 20, t = 10, 
-                                      unit = "pt"))
+        plot.margin = ggplot2::margin(l = 20, b = 10, t = 10, 
+                                      unit = "pt")) +
+  guides(fill = guide_legend(title.position = "bottom",
+                             title.vjust = -2))
 
 
 ggsave(plot = last_plot(),
@@ -242,12 +253,6 @@ ggsave(plot = last_plot(),
 
 
 # SIMPLE PLOT
-plot_df_comb <- plot_df %>% 
-  group_by(date) %>% 
-  summarize(tally_cs = sum(tally_cs)) %>% 
-  ungroup()
-
-
 ggplot(plot_df) +
   geom_area(data = plot_df_comb, aes(x = date, y = tally_cs),
             fill = NA,
