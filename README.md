@@ -38,6 +38,6 @@ TBA
 
 ## Week 6: Tuskegee Airmen
 
-<a href="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_06/code_airmen.R"> Code</a> • <a href="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_05/tuskegee_airmen.png"> Download </a>
+<a href="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_06/code_airmen.R"> Code</a> • <a href="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_06/tuskegee_airmen.png"> Download </a>
 
 <img src="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_06/tuskegee_airmen.png?raw=true" alt="" width="750">
