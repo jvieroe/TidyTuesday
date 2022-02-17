@@ -74,18 +74,18 @@ ggplot(df) +
 
 
 
+insert_comma <- scales::label_comma(accuracy = 1, big.mark = ",", decimal.mark = ".")
+
 df <- df %>% 
-  mutate(tmp = c("\u2013\u2013\u2013\u2013\u2013",
-                 "\u2013\u2013\u2013\u2013",
-                 "\u2013\u2013\u2013\u2013",
+  mutate(tmp = c("\u2013\u2013\u2013\u2013\u2013 ",
+                 "\u2013\u2013\u2013\u2013 ",
+                 "\u2013\u2013\u2013\u2013 ",
                  "\u2013\u2013\u2013",
                  "\u2013\u2013\u2013",
                  "\u2013\u2013\u2013")) %>% 
-  mutate(num = as.character(houshold_value_dollars)) %>% 
-  mutate(num = format(num,
-                      nsmall = 1,
-                      big.mark = ",")) %>% 
-  mutate(label = paste(year, tmp, "$", houshold_value_dollars,
+  mutate(num = insert_comma(houshold_value_dollars)) %>% 
+  mutate(dollars = paste("$", num, sep = " ")) %>% 
+  mutate(label = paste(year, tmp, dollars,
                        sep = " "))
 
 ggplot() +
@@ -100,7 +100,6 @@ ggplot() +
            alpha = 0.8) +
   coord_polar(theta = "y",
               clip = "on") +
-  #annotate()
   geom_label(data = df,
              aes(x = rev(x),
                  y = 0,
