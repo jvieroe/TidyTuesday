@@ -141,7 +141,7 @@ ggplot() +
                                               color = font_col,
                                               family = font_regular,
                                               hjust = 0.5,
-                                              margin = ggplot2::margin(t = 200,
+                                              margin = ggplot2::margin(t = 190,
                                                                        b = -285,
                                                                        unit = "pt")))
 
