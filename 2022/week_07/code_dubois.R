@@ -139,7 +139,7 @@ ggplot() +
                                                                          unit = "pt")),
         plot.title = ggtext::element_markdown(size = 20,
                                               color = font_col,
-                                              family = font_regular,
+                                              family = font_title,
                                               hjust = 0.5,
                                               margin = ggplot2::margin(t = 190,
                                                                        b = -285,
