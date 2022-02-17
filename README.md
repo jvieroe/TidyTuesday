@@ -41,3 +41,11 @@ TBA
 <a href="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_06/code_airmen.R"> Code</a> • <a href="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_06/tuskegee_airmen.png"> Download </a>
 
 <img src="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_06/tuskegee_airmen.png?raw=true" alt="" width="750">
+
+
+
+## Week 7: #DuBoisChallenge2022
+
+<a href="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_07/code_dubois.R"> Code</a> • <a href="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_07/dubois.png"> Download </a>
+
+<img src="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_07/dubois.png?raw=true" alt="" width="750">
