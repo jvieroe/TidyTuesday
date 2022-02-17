@@ -36,6 +36,37 @@ max_x <- df %>%
   as.numeric()
 
 
+df <- df %>% 
+  mutate(x = factor("x")) %>% 
+  mutate(xx = row_number())
+
+insert_comma <- scales::label_comma(accuracy = 1, big.mark = ",", decimal.mark = ".")
+
+df <- df %>%
+  mutate(tmp = c("\u2013\u2013\u2013\u2013\u2013\u2013",
+                 "\u2013\u2013\u2013\u2013",
+                 "\u2013\u2013\u2013\u2013",
+                 "\u2013\u2013",
+                 "\u2013\u2013",
+                 "\u2013\u2013")) %>%
+  mutate(num = insert_comma(houshold_value_dollars)) %>% 
+  mutate(num = as.character(num)) %>% 
+  mutate(dollars = paste(" </span>$", num, sep = " ")) %>% 
+  mutate(dollars = str_pad(dollars,
+                           max(nchar(dollars)),
+                           side ="left")) %>%
+  mutate(label = paste(year, tmp, dollars,
+                       sep = " ")) %>% 
+  mutate(label = paste("<span style='font-family:Quantico'>",
+                       year,
+                       "</span>",
+                       tmp,
+                       "<span style='font-family:Quantico'>",
+                       dollars,
+                       "</span>",
+                       sep = " "))
+
+
 dubois_pal <- c("#ffc0cb",
                 "#4682b4",
                 "#654321",
@@ -49,48 +80,15 @@ show_col(dubois_pal)
 background_col <- lighten("#d2b48c", 0.8)
 
 
-df <- df %>% 
-  mutate(x = factor("x")) %>% 
-  mutate(xx = row_number())
 
-ggplot(df) +
-  geom_col(aes(x = rev(xx),
-               y = houshold_value_dollars,
-               fill = year,
-               group = desc(year)),
-           width = 0.5,
-           color = "#000000",
-           size = 0.1,
-           position = position_dodge(0.5),
-           alpha = 0.8) +
-  coord_polar(theta = "y") +
-  expand_limits(y = max_y * 1.15) +
-  scale_x_continuous(limits = c(-2, 7)) +
-  scale_fill_manual(values = dubois_pal) +
-  theme_void() + 
-  theme(plot.background = element_rect(fill = background_col,
-                                       color = background_col),
-        legend.position = "none")
+font_regular <- "Chakra Petch"
+font_base <- "Helvetica"
+font_title = "Quantico"
+font_col <- "#393433"
 
 
 
-insert_comma <- scales::label_comma(accuracy = 1, big.mark = ",", decimal.mark = ".")
 
-df <- df %>% 
-  mutate(tmp = c("\u2013\u2013\u2013\u2013\u2013 ",
-                 "\u2013\u2013\u2013\u2013 ",
-                 "\u2013\u2013\u2013\u2013 ",
-                 "\u2013\u2013\u2013",
-                 "\u2013\u2013\u2013",
-                 "\u2013\u2013\u2013")) %>% 
-  mutate(num = insert_comma(houshold_value_dollars)) %>% 
-  mutate(dollars = paste("$", num, sep = " ")) %>% 
-  mutate(label = paste(year, tmp, dollars,
-                       sep = " "))
-
-
-font_col <- "black"
-font_regular <- "Cinzel"
 
 ggplot() +
   geom_col(data = df, aes(x = rev(x),
@@ -104,22 +102,22 @@ ggplot() +
            alpha = 0.8) +
   coord_polar(theta = "y",
               clip = "on") +
-  geom_label(data = df,
-             aes(x = rev(x),
-                 y = 0,
-                 group = desc(year),
-                 label = label),
-             position = position_dodge(0.35),
-             hjust = 1,
-             label.size = 0,
-             size = 3,
-             fill = "transparent") +
+  geom_richtext(data = df,
+                aes(x = rev(x),
+                    y = 0,
+                    group = desc(year),
+                    label = label),
+                position = position_dodge(0.35),
+                hjust = 1,
+                label.size = 0,
+                size = 3,
+                fill = "transparent",
+                family = font_base) +
   expand_limits(y = max_y * 1.15) +
   scale_x_discrete(expand = c(0.075, 1)) +
   scale_fill_manual(values = dubois_pal) +
-  labs(title = "TUSKEGEE AIRMEN",
-       y = "CUMULATIVE SUM OF AIRCRAFTS DOWNED",
-       caption = "Graphics: Jeppe Vierø | <span style='font-family: \"Font Awesome 5 Brands\"'> &#xf099;</span> &emsp; <span style='font-family: \"Font Awesome 5 Brands\"'>&#xf09b; &emsp; &emsp; </span> jvieroe | #TidyTuesday 2022, Week 7 | Data: Commemorative Airforce (CAF) by way of the VA-TUG") +
+  labs(title = "ASSESSED VALUE OF HOUSEHOLD AND KITCHEN FURNITURE<br>OWNED BY GEORGIA AFRICAN AMERICANS",
+       caption = "Graphics: Jeppe Vierø | <span style='font-family: \"Font Awesome 5 Brands\"'> &#xf099;</span> &emsp; <span style='font-family: \"Font Awesome 5 Brands\"'>&#xf09b; &emsp; &emsp; </span> jvieroe | #TidyTuesday 2022, Week 7 | Data: Anthony Starks") +
   theme_void() +
   theme(axis.text = element_blank(),
         plot.background = element_rect(fill = background_col,
@@ -144,7 +142,7 @@ ggplot() +
                                               family = font_regular,
                                               hjust = 0.5,
                                               margin = ggplot2::margin(t = 200,
-                                                                       b = -275,
+                                                                       b = -285,
                                                                        unit = "pt")))
 
 
