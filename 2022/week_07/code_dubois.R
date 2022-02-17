@@ -1,9 +1,9 @@
 library(tidyverse)
 library(tidytuesdayR)
 library(janitor)
-#library(spiralize)
 library(scales)
 library(colorspace)
+library(ggtext)
 
 # https://flowingdata.com/2022/01/10/a-quick-and-easy-way-to-make-spiral-charts-in-r/
 # https://stackoverflow.com/questions/52939337/how-to-create-a-time-series-spiral-graph-using-r
@@ -88,6 +88,10 @@ df <- df %>%
   mutate(label = paste(year, tmp, dollars,
                        sep = " "))
 
+
+font_col <- "black"
+font_regular <- "Cinzel"
+
 ggplot() +
   geom_col(data = df, aes(x = rev(x),
                y = houshold_value_dollars,
@@ -113,6 +117,9 @@ ggplot() +
   expand_limits(y = max_y * 1.15) +
   scale_x_discrete(expand = c(0.075, 1)) +
   scale_fill_manual(values = dubois_pal) +
+  labs(title = "TUSKEGEE AIRMEN",
+       y = "CUMULATIVE SUM OF AIRCRAFTS DOWNED",
+       caption = "Graphics: Jeppe Vierø | <span style='font-family: \"Font Awesome 5 Brands\"'> &#xf099;</span> &emsp; <span style='font-family: \"Font Awesome 5 Brands\"'>&#xf09b; &emsp; &emsp; </span> jvieroe | #TidyTuesday 2022, Week 7 | Data: Commemorative Airforce (CAF) by way of the VA-TUG") +
   theme_void() +
   theme(axis.text = element_blank(),
         plot.background = element_rect(fill = background_col,
@@ -120,11 +127,26 @@ ggplot() +
         panel.background = element_rect(fill = background_col,
                                         color = background_col),
         legend.position = "none",
-        plot.margin = ggplot2::margin(t = -150,
+        plot.margin = ggplot2::margin(t = -175,
                                       r = -150,
-                                      b = -150,
+                                      b = -550,
                                       l = -150,
-                                      unit = "pt"))
+                                      unit = "pt"),
+        plot.caption = ggtext::element_markdown(size = 8,
+                                                color = font_col,
+                                                family = font_regular,
+                                                hjust = 0.5,
+                                                margin = ggplot2::margin(b = -175,
+                                                                         t = -200,
+                                                                         unit = "pt")),
+        plot.title = ggtext::element_markdown(size = 20,
+                                              color = font_col,
+                                              family = font_regular,
+                                              hjust = 0.5,
+                                              margin = ggplot2::margin(t = 200,
+                                                                       b = -275,
+                                                                       unit = "pt")))
+
 
 
 ggsave(plot = last_plot(),
