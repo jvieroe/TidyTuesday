@@ -1,3 +1,4 @@
+
 library(tidyverse)
 library(tidytuesdayR)
 library(janitor)
@@ -9,6 +10,9 @@ library(colorspace)
 # https://stackoverflow.com/questions/52939337/how-to-create-a-time-series-spiral-graph-using-r
 # https://www.michaelxiu.com/2020/08/17/ggplot2-Basics/
 # https://bydata.github.io/nyt-corona-spiral-chart/
+
+# https://stackoverflow.com/questions/35225461/zoom-scale-with-coord-polar
+# https://jokergoo.github.io/spiralize_vignettes/spiralize.html
 
 df <- read_csv("https://raw.githubusercontent.com/ajstarks/dubois-data-portraits/master/challenge/2022/challenge08/data.csv")
 
