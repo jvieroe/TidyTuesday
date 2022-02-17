@@ -73,8 +73,23 @@ ggplot(df) +
         legend.position = "none")
 
 
-ggplot(df) +
-  geom_col(aes(x = rev(x),
+
+df <- df %>% 
+  mutate(tmp = c("\u2013\u2013\u2013\u2013\u2013",
+                 "\u2013\u2013\u2013\u2013",
+                 "\u2013\u2013\u2013\u2013",
+                 "\u2013\u2013\u2013",
+                 "\u2013\u2013\u2013",
+                 "\u2013\u2013\u2013")) %>% 
+  mutate(num = as.character(houshold_value_dollars)) %>% 
+  mutate(num = format(num,
+                      nsmall = 1,
+                      big.mark = ",")) %>% 
+  mutate(label = paste(year, tmp, "$", houshold_value_dollars,
+                       sep = " "))
+
+ggplot() +
+  geom_col(data = df, aes(x = rev(x),
                y = houshold_value_dollars,
                fill = year,
                group = desc(year)),
@@ -85,6 +100,17 @@ ggplot(df) +
            alpha = 0.8) +
   coord_polar(theta = "y",
               clip = "on") +
+  #annotate()
+  geom_label(data = df,
+             aes(x = rev(x),
+                 y = 0,
+                 group = desc(year),
+                 label = label),
+             position = position_dodge(0.35),
+             hjust = 1,
+             label.size = 0,
+             size = 3,
+             fill = "transparent") +
   expand_limits(y = max_y * 1.15) +
   scale_x_discrete(expand = c(0.075, 1)) +
   scale_fill_manual(values = dubois_pal) +
