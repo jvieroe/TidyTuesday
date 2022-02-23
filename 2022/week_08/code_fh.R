@@ -3,32 +3,12 @@ library(janitor)
 library(viridis)
 library(ggtext)
 
+rm(list = ls())
+
 df <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-02-22/freedom.csv')
 
 df <- df %>% 
   clean_names()
-
-df
-
-df %>% 
-  filter(is.na(cl) | is.na(pr)) %>% 
-  tally()
-
-exp_val <- 0.2
-
-ggplot(df, aes(x = pr, y = cl, color = region_name, fill = region_name)) +
-  geom_point(shape = 21,
-             position = position_jitter(width = 0.5,
-                                        height = 0.5),
-             alpha = .25) +
-  geom_smooth(method = "lm") +
-  # scale_x_continuous(limits = c(1, 7),
-  #                    expand = c(exp_val, exp_val)) +
-  # scale_y_continuous(limits = c(1, 7),
-  #                    expand = c(exp_val, exp_val)) +
-  theme(legend.position = "none") +
-  facet_wrap(~ region_name)
-
 
 plot_df <- df %>% 
   filter(!is.na(region_name)) %>% 
@@ -84,9 +64,9 @@ ggplot(df_tile, aes(x = pr, y = cl, fill = share)) +
                      labels = scales::percent) +
   labs(x = "Political Rights",
        y = "Civil Liberties",
+       caption = "Graphics: Jeppe Vierø | <span style='font-family: \"Font Awesome 5 Brands\"'> &#xf099;</span> &emsp; <span style='font-family: \"Font Awesome 5 Brands\"'>&#xf09b; &emsp; &emsp; </span> jvieroe | #TidyTuesday 2022, Week 8 | Data: Freedom House",
        title = "State of Freedom 2020",
-       subtitle = "<subtitle text>",
-       caption = "Graphics: Jeppe Vierø | <span style='font-family: \"Font Awesome 5 Brands\"'> &#xf099;</span> &emsp; <span style='font-family: \"Font Awesome 5 Brands\"'>&#xf09b; &emsp; &emsp; </span> jvieroe | #TidyTuesday 2022, Week 7 | Data: Anthony Starks") +
+       subtitle = "<subtitle text>") +
   facet_wrap(~ region_name) +
   theme(axis.ticks = element_blank(),
         strip.background = element_rect(fill = strip_fill,
@@ -98,7 +78,11 @@ ggplot(df_tile, aes(x = pr, y = cl, fill = share)) +
         plot.background = element_rect(fill = bckgrnd_col,
                                        color = bckgrnd_col),
         legend.background = element_rect(fill = bckgrnd_col,
-                                         color = bckgrnd_col)) +
+                                         color = bckgrnd_col),
+        plot.caption = ggtext::element_markdown(hjust = 0,
+                                                margin = ggplot2::margin(t = 20, 
+                                                                         unit = "pt")),
+        plot.caption.position = "plot") +
   guides(fill = guide_colorbar(title.position = "top",
                                title.hjust = 0.5,
                                ticks = FALSE,
