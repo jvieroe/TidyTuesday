@@ -1,5 +1,6 @@
 library(tidyverse)
 library(janitor)
+library(viridis)
 
 df <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-02-22/freedom.csv')
 
@@ -145,9 +146,40 @@ df_tile <- df_tile %>%
   ungroup()
 
 tile_line <- "white"
+strip_col <- "transparent"
+strip_fill <- "white"
+bckgrnd_col <- "white"
 
 ggplot(df_tile, aes(x = pr, y = cl, fill = share)) +
   geom_tile(color = tile_line,
             size = .75) +
   coord_fixed() +
-  facet_wrap(~ region_name)
+  scale_fill_viridis(direction = -1,
+                     option = "F",
+                     name = "Share",
+                     breaks = seq(0, 0.5, 0.25),
+                     labels = scales::percent) +
+  labs(x = "Political Rights",
+       y = "Civil Liberties",
+       title = "State of Freedom 2020",
+       subtitle = "<subtitle text>") +
+  facet_wrap(~ region_name) +
+  theme(axis.ticks = element_blank(),
+        strip.background = element_rect(fill = strip_fill,
+                                        color = strip_col),
+        legend.position = c(0.85, 0.25),
+        legend.direction = "horizontal",
+        # panel.background = element_rect(fill = bckgrnd_col,
+        #                                 color = bckgrnd_col),
+        plot.background = element_rect(fill = bckgrnd_col,
+                                       color = bckgrnd_col),
+        legend.background = element_rect(fill = bckgrnd_col,
+                                         color = bckgrnd_col)) +
+  guides(fill = guide_colorbar(title.position = "top",
+                               title.hjust = 0.5,
+                               ticks = FALSE,
+                               barwidth = 9,
+                               barheight = 0.8))
+
+ggsave(plot = last_plot(),
+       filename = "2022/week_08/fh.png")
