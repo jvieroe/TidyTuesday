@@ -53,7 +53,10 @@ strip_col <- "transparent"
 strip_fill <- "white"
 bckgrnd_col <- "white"
 text_font <- "Inconsolata SemiExpanded"
+text_font <- "Open Sans Condensed Light"
+text_font <- "Open Sans Condensed Light"
 title_font <- "Open Sans Condensed Light"
+title_font <- "Barlow Condensed"
 
 ggplot(df_tile, aes(x = pr, y = cl, fill = share)) +
   geom_tile(color = tile_line,
@@ -67,9 +70,9 @@ ggplot(df_tile, aes(x = pr, y = cl, fill = share)) +
   labs(x = "Political Rights",
        y = "Civil Liberties",
        caption = "Graphics: Jeppe Vierø | <span style='font-family: \"Font Awesome 5 Brands\"'> &#xf099;</span> &emsp; <span style='font-family: \"Font Awesome 5 Brands\"'>&#xf09b; &emsp; &emsp; </span> jvieroe | #TidyTuesday 2022, Week 8 | Data: Freedom House",
-       title = "STATE OF FREEDOM 2020",
-       subtitle = "<subtitle text>") +
-  facet_wrap(~ region_name) +
+       title = "STATE OF FREEDOM",
+       subtitle = "Region-specific distribution of states by their Political Rights and Civil Liberties, according to Freedom House") +
+  facet_wrap(~ region_name, nrow = 2) +
   theme(axis.ticks = element_blank(),
         strip.background = element_rect(fill = strip_fill,
                                         color = strip_col),
@@ -82,15 +85,29 @@ ggplot(df_tile, aes(x = pr, y = cl, fill = share)) +
         legend.background = element_rect(fill = bckgrnd_col,
                                          color = bckgrnd_col),
         axis.title.x = element_text(family = text_font,
+                                    size = 14,
                                     vjust = -6),
         axis.title.y = element_text(family = text_font,
+                                    size = 14,
                                     vjust = 6),
-        axis.text.x = element_text(family = text_font),
-        axis.text.y = element_text(family = text_font),
-        legend.text = element_text(family = text_font),
-        legend.title = element_text(family = text_font),
-        plot.title = element_text(family = title_font),
+        axis.text.x = element_text(family = text_font,
+                                   size = 12),
+        axis.text.y = element_text(family = text_font,
+                                   size = 12),
+        legend.text = element_text(family = text_font,
+                                   size = 12),
+        legend.title = element_text(family = text_font,
+                                    size = 13),
+        plot.title = element_text(family = title_font,
+                                  size = 40),
+        plot.subtitle = ggtext::element_markdown(family = text_font,
+                                                 lineheight = 1.2,
+                                                 size = 18),
+        strip.text = element_text(family = text_font,
+                                  size = 15),
         plot.caption = ggtext::element_markdown(hjust = 1,
+                                                size = 10,
+                                                family = text_font,
                                                 margin = ggplot2::margin(t = 30, 
                                                                          unit = "pt")),
         plot.caption.position = "plot") +
@@ -99,6 +116,9 @@ ggplot(df_tile, aes(x = pr, y = cl, fill = share)) +
                                ticks = FALSE,
                                barwidth = 9,
                                barheight = 0.8))
+
+
+
 
 ggsave(plot = last_plot(),
        filename = "2022/week_08/fh.png")
