@@ -52,6 +52,8 @@ tile_line <- "white"
 strip_col <- "transparent"
 strip_fill <- "white"
 bckgrnd_col <- "white"
+text_font <- "Inconsolata SemiExpanded"
+title_font <- "Open Sans Condensed Light"
 
 ggplot(df_tile, aes(x = pr, y = cl, fill = share)) +
   geom_tile(color = tile_line,
@@ -65,7 +67,7 @@ ggplot(df_tile, aes(x = pr, y = cl, fill = share)) +
   labs(x = "Political Rights",
        y = "Civil Liberties",
        caption = "Graphics: Jeppe Vierø | <span style='font-family: \"Font Awesome 5 Brands\"'> &#xf099;</span> &emsp; <span style='font-family: \"Font Awesome 5 Brands\"'>&#xf09b; &emsp; &emsp; </span> jvieroe | #TidyTuesday 2022, Week 8 | Data: Freedom House",
-       title = "State of Freedom 2020",
+       title = "STATE OF FREEDOM 2020",
        subtitle = "<subtitle text>") +
   facet_wrap(~ region_name) +
   theme(axis.ticks = element_blank(),
@@ -73,14 +75,23 @@ ggplot(df_tile, aes(x = pr, y = cl, fill = share)) +
                                         color = strip_col),
         legend.position = c(0.85, 0.25),
         legend.direction = "horizontal",
-        # panel.background = element_rect(fill = bckgrnd_col,
-        #                                 color = bckgrnd_col),
+        panel.background = element_rect(fill = bckgrnd_col,
+                                        color = bckgrnd_col),
         plot.background = element_rect(fill = bckgrnd_col,
                                        color = bckgrnd_col),
         legend.background = element_rect(fill = bckgrnd_col,
                                          color = bckgrnd_col),
-        plot.caption = ggtext::element_markdown(hjust = 0,
-                                                margin = ggplot2::margin(t = 20, 
+        axis.title.x = element_text(family = text_font,
+                                    vjust = -6),
+        axis.title.y = element_text(family = text_font,
+                                    vjust = 6),
+        axis.text.x = element_text(family = text_font),
+        axis.text.y = element_text(family = text_font),
+        legend.text = element_text(family = text_font),
+        legend.title = element_text(family = text_font),
+        plot.title = element_text(family = title_font),
+        plot.caption = ggtext::element_markdown(hjust = 1,
+                                                margin = ggplot2::margin(t = 30, 
                                                                          unit = "pt")),
         plot.caption.position = "plot") +
   guides(fill = guide_colorbar(title.position = "top",
