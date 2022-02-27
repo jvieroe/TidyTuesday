@@ -4,6 +4,8 @@ library(viridis)
 library(ggtext)
 library(gtable)
 
+rm(list = ls())
+
 df <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-02-22/freedom.csv')
 
 df <- df %>% 
@@ -120,7 +122,7 @@ ggplot(df_tile, aes(x = pr, y = cl, fill = share)) +
 
 
 ggsave(plot = last_plot(),
-       filename = "2022/week_08/fh_raw.png")
+       filename = "2022/week_08/fh.png")
 
 
 p <- last_plot()
@@ -128,7 +130,7 @@ p <- last_plot()
 t <- ggplot() +
   annotate("richtext", x = 1, y = 1,
            label = "Regional distribution of states according <br>to the degree of 'Political Rights' and <br>'Civil Liberties' allowed by the individual <br>regimes, according to Freedom House.<br><br>
-           Lower values indicate a <span style='color:#5cbd36'>higher</span> degree <br>of political rights/civil liberties",
+           Lower values indicate <span style='color:#5cbd36'>higher</span> degree of <br>political rights/civil liberties",
            family = text_font,
            size = 5,
            hjust = 0,
@@ -144,13 +146,12 @@ pg <- ggplot2::ggplotGrob(p)
 tg <- ggplot2::ggplotGrob(t)
 
 pl <- gtable_filter(pg, 'panel', trim=F)$layout
-pg <- gtable_add_grob(pg, tg, t = max(pl$t),
-                      l = max(pl$l))
+pg <- gtable_add_grob(pg, tg, t=max(pl$t), l=max(pl$l))
 
 grid::grid.newpage()
 grid::grid.draw(pg)
 
-png("2022/week_08/fh.png", width = 28, height = 22, units = "cm", res = 600)
+png("2022/week_08/fh_2.png", width = 28, height = 22, units = "cm", res = 600)
 grid::grid.draw(pg)
 dev.off()
 
