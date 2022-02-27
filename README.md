@@ -49,3 +49,11 @@ TBA
 <a href="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_07/code_dubois.R"> Code</a> • <a href="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_07/dubois.png"> Download </a>
 
 <img src="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_07/dubois.png?raw=true" alt="" width="750">
+
+
+
+## Week 8: World Freedom Index
+
+<a href="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_08/code_fh.R"> Code</a> • <a href="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_08/fh.png"> Download </a>
+
+<img src="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_08/fh.png?raw=true" alt="" width="750">
