@@ -52,7 +52,7 @@ TBA
 
 
 
-## Week 8: World Freedom index
+## Week 8: World Freedom Index
 
 <a href="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_08/code_fh.R"> Code</a> • <a href="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_08/fh.png"> Download </a>
 
