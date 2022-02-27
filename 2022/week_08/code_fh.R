@@ -63,8 +63,7 @@ ggplot(df_tile, aes(x = pr, y = cl, fill = share)) +
   coord_fixed() +
   scale_fill_viridis(direction = -1,
                      option = "F",
-                     #name = "Share",
-                     name = "",
+                     name = "Share",
                      breaks = seq(0, 0.5, 0.25),
                      labels = scales::percent) +
   labs(x = "Political Rights",
@@ -78,8 +77,6 @@ ggplot(df_tile, aes(x = pr, y = cl, fill = share)) +
                                         color = strip_col),
         legend.position = c(0.85, 0.025),
         legend.direction = "horizontal",
-        # legend.position = c(1.15, 0.25),
-        # legend.direction = "vertical",
         panel.background = element_rect(fill = bckgrnd_col,
                                         color = bckgrnd_col),
         plot.background = element_rect(fill = bckgrnd_col,
@@ -127,8 +124,8 @@ p <- last_plot()
 
 t <- ggplot() +
   annotate("richtext", x = 1, y = 1,
-           label = "Regional distribution of states according <br>to the degree of 'Political Rights' and <br>'Civil Liberties' allowed by the individual <br>regimes, according to Freedom House.<br><br>
-           Lower values indicate a <span style='color:#5cbd36'>higher</span> degree <br>of political rights/civil liberties",
+           label = "Regional distribution of states according <br>to the degree of 'Political Rights' and <br>'Civil Liberties' allowed by the individual <br>regimes, as defined by Freedom House.<br><br>
+           Lower scores indicate a <span style='color:#5cbd36'>higher</span> degree <br>of political rights/civil liberties",
            family = text_font,
            size = 5,
            hjust = 0,
@@ -136,7 +133,7 @@ t <- ggplot() +
            text.color = "black",
            fill = NA, alpha = 1) +
   xlim(1, 1.5) +
-  ylim(0.35, 1.5) +
+  ylim(0.25, 1.5) +
   theme_void()
 
 
