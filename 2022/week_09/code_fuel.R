@@ -147,14 +147,14 @@ us_grid <- us_grid %>%
 
 us_plot <- usa %>% 
   st_intersection(usa_union) %>% 
-  st_simplify(dTolerance = 10000)
+  st_simplify(dTolerance = 5000)
+
+us_grid <- us_grid %>% 
+  st_intersection(us_plot)
 
 bkg_col <- "gray20"
 bkg <- element_rect(fill = bkg_col,
                     color = bkg_col)
-
-
-
 
 
 ggplot() +
@@ -164,7 +164,7 @@ ggplot() +
   geom_sf(data = us_plot,
           fill = NA,
           color = "white",
-          size = 0.25) +
+          size = 0.35) +
   scale_fill_viridis(direction = -1,
                      option = "F",
                      name = "Share") +
@@ -173,7 +173,9 @@ ggplot() +
         plot.background = bkg,
         panel.grid.major = element_line(color = "white",
                                         size = .1),
-        legend.position = "none")
+        legend.position = "none",
+        plot.margin = ggplot2::margin(t = 0,
+                                      unit = "pt"))
 
 ggsave(plot = last_plot(),
        filename = "2022/week_09/fuel.png")
