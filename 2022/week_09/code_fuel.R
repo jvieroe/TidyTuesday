@@ -35,28 +35,45 @@ hawaii <- usa %>%
 usa <- usa %>% 
   filter(!name %in% c("Alaska", "Hawaii"))
 
-# usa <- usa %>% 
-#   st_transform(crs = 3857)
-
 usa <- usa %>%
-  st_simplify(dTolerance = 20000)
+  st_transform(crs = 3857)
+
+# usa <- usa %>%
+#   st_simplify(dTolerance = 20000)
 
 
-# usa_union <- usa %>% 
-#   summarize()
-# 
-# usa_union <- usa_union %>% 
-#   st_transform(3857)
+usa_union <- usa %>%
+  summarize()
+
+
+usa_union <- usa_union %>%
+  st_transform(3857)
 
 stations <- stations %>% 
   st_transform(3857)
 
+latitude <- 38
+longitude <- -100
+
+ortho <- paste0('+proj=ortho +lat_0=', latitude, ' +lon_0=', longitude,
+                ' +x_0=0 +y_0=0 +a=6371000 +b=6371000 +units=m +no_defs')
+
+
 usa <- usa %>% 
-  st_transform(3857)
+  st_transform(ortho)
 
-st_is_longlat(usa)
 
-us_grid <- usa %>% 
+usa_union <- usa_union %>% 
+  st_transform(ortho)
+
+stations <- stations %>% 
+  st_transform(ortho)
+
+
+# usa_union <- usa_union %>%
+#   st_simplify(dTolerance = 10000)
+
+us_grid <- usa_union %>% 
   summarise() %>% 
   st_make_grid(.,
                cellsize = c(200*10^3,
@@ -64,14 +81,8 @@ us_grid <- usa %>%
                square = FALSE) %>% 
   st_as_sf()
 
-tm_shape(us_grid) +
-  tm_polygons()
-
 us_grid <- us_grid %>% 
-  st_intersection(usa)
-
-tm_shape(us_grid) +
-  tm_polygons()
+  st_intersection(usa_union)
 
 stations <- stations %>% 
   mutate(us_dist = st_distance(.,
@@ -112,10 +123,6 @@ us_grid <- us_grid %>%
                      intersections_data,
                      by = "grid_id")
 
-usa <- usa %>% 
-  tidylog::left_join(.,
-                     intersections_data,
-                     by = "name")
 
 # us_grid <- us_grid %>% 
 #   mutate(across(c(public, private),
@@ -130,12 +137,6 @@ us_grid <- us_grid %>%
                 ~ log(.x + 1),
                 .names = "ln_{.col}"))
 
-usa <- usa %>% 
-  mutate(across(c(public, private),
-                ~ log(.x + 1),
-                .names = "ln_{.col}"))
-
-
 us_grid <- us_grid %>%
   mutate(across(ends_with(c("public", "private")),
                 ~ ifelse(is.na(.x),
@@ -144,37 +145,34 @@ us_grid <- us_grid %>%
 
 
 
+us_plot <- usa %>% 
+  st_intersection(usa_union) %>% 
+  st_simplify(dTolerance = 10000)
+
 bkg_col <- "gray20"
 bkg <- element_rect(fill = bkg_col,
                     color = bkg_col)
 
+
+
+
+
 ggplot() +
   geom_sf(data = us_grid, aes(fill = ln_public),
           color = "white",
-          size = 0.1) +
-  geom_sf(data = usa,
+          size = 0.05) +
+  geom_sf(data = us_plot,
           fill = NA,
           color = "white",
-          size = 0.3) +
+          size = 0.25) +
   scale_fill_viridis(direction = -1,
                      option = "F",
                      name = "Share") +
   theme_void() +
   theme(panel.background = bkg,
-        plot.background = bkg)
+        plot.background = bkg,
+        panel.grid.major = element_line(color = "white",
+                                        size = .1),
+        legend.position = "none")
 
 
-ggplot() +
-  geom_sf(data = usa, aes(fill = ln_public),
-          color = "white",
-          size = 0.1) +
-  geom_sf(data = usa_union,
-          fill = NA,
-          color = "white",
-          size = 0.3) +
-  scale_fill_viridis(direction = -1,
-                     option = "F",
-                     name = "Share") +
-  theme_void() +
-  theme(panel.background = bkg,
-        plot.background = bkg)
