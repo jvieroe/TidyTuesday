@@ -156,7 +156,12 @@ bkg_col <- "gray20"
 bkg <- element_rect(fill = bkg_col,
                     color = bkg_col)
 txt_col <- "white"
+txt_font <- "Fira Sans"
 
+library(MetBrewer)
+
+pal <- met.brewer("VanGogh3",
+                  type = "continuous")
 
 ggplot() +
   geom_sf(data = us_grid, aes(fill = ln_public),
@@ -169,19 +174,23 @@ ggplot() +
   scale_fill_viridis(direction = -1,
                      option = "F",
                      name = "Share") +
+  #scale_fill_gradientn(colors = pal) +
   theme_void() +
-  labs(title = "Public Access to Alternative Fuel in the US",
-       subtitle = "yy",
+  labs(title = "Alternative Fuel Stations in the US",
+       subtitle = "Number (log) of Alternative Fuel Stations with Public Access",
        caption = "Graphics: Jeppe Vierø | <span style='font-family: \"Font Awesome 5 Brands\"'> &#xf099;</span> &emsp; <span style='font-family: \"Font Awesome 5 Brands\"'>&#xf09b; &emsp; &emsp; </span> jvieroe | #TidyTuesday 2022, Week 9 | Data: US DOT") +
   coord_sf(clip = "off") +
   theme(panel.background = bkg,
         plot.background = bkg,
         plot.title = ggtext::element_markdown(hjust = 0.5,
-                                              color = txt_col),
+                                              color = txt_col,
+                                              family = txt_font),
         plot.subtitle = ggtext::element_markdown(hjust = 0.5,
-                                                 color = txt_col),
+                                                 color = txt_col,
+                                                 family = txt_font),
         plot.caption = ggtext::element_markdown(hjust = 0.5,
-                                                color = txt_col),
+                                                color = txt_col,
+                                                family = txt_font),
         panel.grid.major = element_line(color = "white",
                                         size = .06),
         legend.position = "none",
