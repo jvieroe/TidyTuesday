@@ -155,6 +155,7 @@ us_grid <- us_grid %>%
 bkg_col <- "gray20"
 bkg <- element_rect(fill = bkg_col,
                     color = bkg_col)
+txt_col <- "white"
 
 
 ggplot() +
@@ -169,10 +170,20 @@ ggplot() +
                      option = "F",
                      name = "Share") +
   theme_void() +
+  labs(title = "Public Access to Alternative Fuel in the US",
+       subtitle = "yy",
+       caption = "Graphics: Jeppe Vierø | <span style='font-family: \"Font Awesome 5 Brands\"'> &#xf099;</span> &emsp; <span style='font-family: \"Font Awesome 5 Brands\"'>&#xf09b; &emsp; &emsp; </span> jvieroe | #TidyTuesday 2022, Week 9 | Data: US DOT") +
+  coord_sf(clip = "off") +
   theme(panel.background = bkg,
         plot.background = bkg,
+        plot.title = ggtext::element_markdown(hjust = 0.5,
+                                              color = txt_col),
+        plot.subtitle = ggtext::element_markdown(hjust = 0.5,
+                                                 color = txt_col),
+        plot.caption = ggtext::element_markdown(hjust = 0.5,
+                                                color = txt_col),
         panel.grid.major = element_line(color = "white",
-                                        size = .1),
+                                        size = .06),
         legend.position = "none",
         plot.margin = ggplot2::margin(t = 0,
                                       unit = "pt"))
