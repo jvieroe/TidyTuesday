@@ -81,27 +81,28 @@ intersections_data <- stations %>%
          grid_id)
 
 
-# intersections_data <- stations %>% 
-#   mutate(grid_id = st_intersects(.,
-#                                  us_grid)) %>% 
-#   mutate(grid_id = as.numeric(grid_id)) %>% 
-#   select(access_code,
-#          grid_id)
+intersections_data <- intersections_data %>% 
+  group_by(access_code,
+           grid_id,
+           .drop = FALSE) %>% 
+  tally()
 
-any(is.na(intersections_data$grid_id))
-
-test <- intersections_data %>% 
-  filter(is.na(grid_id))
-
-tm_shape(test) +
-  tm_dots()
+intersections_data <- intersections_data %>% 
+  pivot_wider(id_cols = grid_id,
+              values_from = n,
+              names_from = access_code)
 
 
-temp1 <- temp1 %>% 
-  group_by()
+us_grid <- us_grid %>% 
+  tidylog::left_join(.,
+                     intersections_data,
+                     by = "grid_id")
 
-class(temp1$grid_id)
+us_grid <- us_grid %>% 
+  mutate(across(c(public, private),
+                ~ ifelse(is.na(.x),
+                         0,
+                         .x)))
 
-
-
-
+ggplot() +
+  geom_sf(data = us_grid, aes(fill = public))
