@@ -6,6 +6,7 @@ library(ggtext)
 library(janitor)
 library(sf)
 library(rnaturalearth)
+library(viridis)
 
 tmap_mode("view")
 
@@ -50,8 +51,8 @@ st_is_longlat(usa_union)
 
 us_grid <- usa_union %>% 
   st_make_grid(.,
-               cellsize = c(100*10^3,
-                            100*10^3),
+               cellsize = c(50*10^3,
+                            50*10^3),
                square = FALSE) %>% 
   st_as_sf()
 
@@ -105,4 +106,11 @@ us_grid <- us_grid %>%
                          .x)))
 
 ggplot() +
-  geom_sf(data = us_grid, aes(fill = public))
+  geom_sf(data = us_grid, aes(fill = private)) +
+  scale_fill_viridis(direction = -1,
+                     option = "F",
+                     name = "Share")
+
+
+tm_shape(stations) +
+  tm_dots()
