@@ -22,8 +22,6 @@ stations <- stations %>%
 usa <- rnaturalearth::ne_states("United States of America") %>% 
   st_as_sf()
 
-names(usa)
-
 alaska <- usa %>% 
   filter(name == "Alaska")
 
@@ -61,16 +59,20 @@ us_grid <- us_grid %>%
   st_intersection(usa_union)
 
 
-tm_shape(us_grid) +
-  tm_polygons()
-
-
 stations <- stations %>% 
   mutate(us_dist = st_distance(.,
                                usa_union))
 
 stations <- stations %>% 
   mutate(us_dist = unclass(us_dist))
+
+stations <- stations %>% 
+  filter(us_dist < 50*10^3)
+
+intersections_data <- stations %>% 
+  mutate(grid_id = st_join(.,
+                           us_grid,
+                           join = st_nearest_feature))
 
 intersections_data <- stations %>% 
   mutate(grid_id = st_intersects(.,
