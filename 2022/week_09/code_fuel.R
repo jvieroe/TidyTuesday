@@ -69,18 +69,24 @@ stations <- stations %>%
 stations <- stations %>% 
   filter(us_dist < 50*10^3)
 
-intersections_data <- stations %>% 
-  mutate(grid_id = st_join(.,
-                           us_grid,
-                           join = st_nearest_feature))
+us_grid <- us_grid %>% 
+  mutate(grid_id = row_number())
 
 intersections_data <- stations %>% 
-  mutate(grid_id = st_intersects(.,
-                                 us_grid)) %>% 
-  mutate(grid_id = as.numeric(grid_id)) %>% 
-  #st_drop_geometry() %>% 
+  st_join(.,
+          us_grid,
+          join = st_nearest_feature) %>% 
+  st_drop_geometry() %>% 
   select(access_code,
          grid_id)
+
+
+# intersections_data <- stations %>% 
+#   mutate(grid_id = st_intersects(.,
+#                                  us_grid)) %>% 
+#   mutate(grid_id = as.numeric(grid_id)) %>% 
+#   select(access_code,
+#          grid_id)
 
 any(is.na(intersections_data$grid_id))
 
