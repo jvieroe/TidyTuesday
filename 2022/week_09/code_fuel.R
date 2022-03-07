@@ -81,8 +81,8 @@ us_grid <- usa_union %>%
                square = FALSE) %>% 
   st_as_sf()
 
-us_grid <- us_grid %>% 
-  st_intersection(usa_union)
+# us_grid <- us_grid %>% 
+#   st_intersection(usa_union)
 
 stations <- stations %>% 
   mutate(us_dist = st_distance(.,
@@ -175,4 +175,6 @@ ggplot() +
                                         size = .1),
         legend.position = "none")
 
+ggsave(plot = last_plot(),
+       filename = "2022/week_09/fuel.png")
 
