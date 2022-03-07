@@ -1,3 +1,5 @@
+rm(list=ls())
+
 # https://cran.r-project.org/web/packages/usmap/vignettes/mapping.html
 # https://jtr13.github.io/cc19/different-ways-of-plotting-u-s-map-in-r.html
 
@@ -7,6 +9,7 @@ library(janitor)
 library(sf)
 library(rnaturalearth)
 library(viridis)
+library(tmap)
 
 tmap_mode("view")
 
@@ -27,7 +30,7 @@ alaska <- usa %>%
   filter(name == "Alaska")
 
 hawaii <- usa %>% 
-  filter(name == "Hwaii")
+  filter(name == "Hawaii")
 
 usa <- usa %>% 
   filter(!name %in% c("Alaska", "Hawaii"))
@@ -35,30 +38,40 @@ usa <- usa %>%
 # usa <- usa %>% 
 #   st_transform(crs = 3857)
 
-tm_shape(usa) +
-  tm_polygons()
+usa <- usa %>%
+  st_simplify(dTolerance = 20000)
 
-usa_union <- usa %>% 
-  summarize()
 
-usa_union <- usa_union %>% 
-  st_transform(3857)
+# usa_union <- usa %>% 
+#   summarize()
+# 
+# usa_union <- usa_union %>% 
+#   st_transform(3857)
 
 stations <- stations %>% 
   st_transform(3857)
 
-st_is_longlat(usa_union)
+usa <- usa %>% 
+  st_transform(3857)
 
-us_grid <- usa_union %>% 
+st_is_longlat(usa)
+
+us_grid <- usa %>% 
+  summarise() %>% 
   st_make_grid(.,
-               cellsize = c(50*10^3,
-                            50*10^3),
+               cellsize = c(200*10^3,
+                            200*10^3),
                square = FALSE) %>% 
   st_as_sf()
 
-us_grid <- us_grid %>% 
-  st_intersection(usa_union)
+tm_shape(us_grid) +
+  tm_polygons()
 
+us_grid <- us_grid %>% 
+  st_intersection(usa)
+
+tm_shape(us_grid) +
+  tm_polygons()
 
 stations <- stations %>% 
   mutate(us_dist = st_distance(.,
@@ -73,11 +86,11 @@ stations <- stations %>%
 us_grid <- us_grid %>% 
   mutate(grid_id = row_number())
 
-intersections_data <- stations %>% 
+intersections_data <- stations %>%
   st_join(.,
           us_grid,
-          join = st_nearest_feature) %>% 
-  st_drop_geometry() %>% 
+          join = st_nearest_feature) %>%
+  st_drop_geometry() %>%
   select(access_code,
          grid_id)
 
@@ -99,18 +112,69 @@ us_grid <- us_grid %>%
                      intersections_data,
                      by = "grid_id")
 
+usa <- usa %>% 
+  tidylog::left_join(.,
+                     intersections_data,
+                     by = "name")
+
+# us_grid <- us_grid %>% 
+#   mutate(across(c(public, private),
+#                 ~ ifelse(is.na(.x),
+#                          0,
+#                          .x)))
+
+log(NA)
+
 us_grid <- us_grid %>% 
   mutate(across(c(public, private),
+                ~ log(.x + 1),
+                .names = "ln_{.col}"))
+
+usa <- usa %>% 
+  mutate(across(c(public, private),
+                ~ log(.x + 1),
+                .names = "ln_{.col}"))
+
+
+us_grid <- us_grid %>%
+  mutate(across(ends_with(c("public", "private")),
                 ~ ifelse(is.na(.x),
                          0,
                          .x)))
 
+
+
+bkg_col <- "gray20"
+bkg <- element_rect(fill = bkg_col,
+                    color = bkg_col)
+
 ggplot() +
-  geom_sf(data = us_grid, aes(fill = private)) +
+  geom_sf(data = us_grid, aes(fill = ln_public),
+          color = "white",
+          size = 0.1) +
+  geom_sf(data = usa,
+          fill = NA,
+          color = "white",
+          size = 0.3) +
   scale_fill_viridis(direction = -1,
                      option = "F",
-                     name = "Share")
+                     name = "Share") +
+  theme_void() +
+  theme(panel.background = bkg,
+        plot.background = bkg)
 
 
-tm_shape(stations) +
-  tm_dots()
+ggplot() +
+  geom_sf(data = usa, aes(fill = ln_public),
+          color = "white",
+          size = 0.1) +
+  geom_sf(data = usa_union,
+          fill = NA,
+          color = "white",
+          size = 0.3) +
+  scale_fill_viridis(direction = -1,
+                     option = "F",
+                     name = "Share") +
+  theme_void() +
+  theme(panel.background = bkg,
+        plot.background = bkg)
