@@ -10,6 +10,7 @@ library(sf)
 library(rnaturalearth)
 library(viridis)
 library(tmap)
+library(MetBrewer)
 
 tmap_mode("view")
 
@@ -155,17 +156,20 @@ us_grid <- us_grid %>%
 bkg_col <- "gray20"
 bkg <- element_rect(fill = bkg_col,
                     color = bkg_col)
-txt_col <- "white"
+
 txt_font <- "Fira Sans"
 
-library(MetBrewer)
+
 
 pal <- met.brewer("VanGogh3",
                   type = "continuous")
 
 pal_text <- pal %>% unlist() %>% as.character()
-pal_text[1]
-pal_text[8]
+pt1 <- pal_text[1]
+txt_col <- pal_text[2]
+pt8 <- pal_text[8]
+
+pal_text[5]
 
 ggplot() +
   geom_sf(data = us_grid, aes(fill = ln_public),
@@ -174,27 +178,39 @@ ggplot() +
   geom_sf(data = us_plot,
           fill = NA,
           color = "white",
-          size = 0.35) +
-  scale_fill_viridis(direction = -1,
-                     option = "F",
-                     name = "Share") +
-  #scale_fill_gradientn(colors = pal) +
+          size = 0.225) +
+  # scale_fill_viridis(direction = -1,
+  #                    option = "F",
+  #                    name = "") +
+  scale_fill_gradientn(colors = pal) +
   theme_void() +
   labs(title = "Alternative Fuel Stations in the US",
-       subtitle = "Number (log) of Alternative Fuel Stations with Public Access",
+       subtitle = "Number (log) of Alternative Fuel Stations with public access.<br><span style='color:#447243'>Darker colors </span> reflect a larger number of stations",
        caption = "Graphics: Jeppe Vierø | <span style='font-family: \"Font Awesome 5 Brands\"'> &#xf099;</span> &emsp; <span style='font-family: \"Font Awesome 5 Brands\"'>&#xf09b; &emsp; &emsp; </span> jvieroe | #TidyTuesday 2022, Week 9 | Data: US DOT") +
-  coord_sf(clip = "off") +
+  coord_sf(clip = "off",
+           xlim = c(st_bbox(us_grid)[[1]]*1.00,
+                    st_bbox(us_grid)[[3]]*1.00),
+           ylim = c(st_bbox(us_grid)[[2]]*1.35,
+                    st_bbox(us_grid)[[4]]*1.35)) +
   theme(panel.background = bkg,
         plot.background = bkg,
-        plot.title = ggtext::element_markdown(hjust = 0.5,
-                                              color = txt_col,
-                                              family = txt_font),
+        # plot.title = ggtext::element_markdown(hjust = 0.5,
+        #                                       color = pt1,
+        #                                       size = 24,
+        #                                       family = txt_font,
+        #                                       margin = ggplot2::margin(b = -0,
+        #                                                                unit = "pt")),
         plot.subtitle = ggtext::element_markdown(hjust = 0.5,
                                                  color = txt_col,
-                                                 family = txt_font),
+                                                 family = txt_font,
+                                                 margin = ggplot2::margin(t = 0,
+                                                                          b = -12.5,
+                                                                          unit = "pt")),
         plot.caption = ggtext::element_markdown(hjust = 0.5,
                                                 color = txt_col,
-                                                family = txt_font),
+                                                family = txt_font,
+                                                margin = ggplot2::margin(t = -10,
+                                                                         unit = "pt")),
         panel.grid.major = element_line(color = "white",
                                         size = .06),
         legend.position = "none",
