@@ -163,6 +163,10 @@ library(MetBrewer)
 pal <- met.brewer("VanGogh3",
                   type = "continuous")
 
+pal_text <- pal %>% unlist() %>% as.character()
+pal_text[1]
+pal_text[8]
+
 ggplot() +
   geom_sf(data = us_grid, aes(fill = ln_public),
           color = "white",
