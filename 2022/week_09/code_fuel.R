@@ -1,18 +1,10 @@
-rm(list=ls())
-
-# https://cran.r-project.org/web/packages/usmap/vignettes/mapping.html
-# https://jtr13.github.io/cc19/different-ways-of-plotting-u-s-map-in-r.html
-
 library(tidyverse)
 library(ggtext)
 library(janitor)
 library(sf)
 library(rnaturalearth)
 library(viridis)
-library(tmap)
 library(MetBrewer)
-
-tmap_mode("view")
 
 stations <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-03-01/stations.csv')
 
@@ -27,21 +19,11 @@ stations <- stations %>%
 usa <- rnaturalearth::ne_states("United States of America") %>% 
   st_as_sf()
 
-alaska <- usa %>% 
-  filter(name == "Alaska")
-
-hawaii <- usa %>% 
-  filter(name == "Hawaii")
-
 usa <- usa %>% 
   filter(!name %in% c("Alaska", "Hawaii"))
 
 usa <- usa %>%
   st_transform(crs = 3857)
-
-# usa <- usa %>%
-#   st_simplify(dTolerance = 20000)
-
 
 usa_union <- usa %>%
   summarize()
@@ -70,10 +52,6 @@ usa_union <- usa_union %>%
 stations <- stations %>% 
   st_transform(ortho)
 
-
-# usa_union <- usa_union %>%
-#   st_simplify(dTolerance = 10000)
-
 us_grid <- usa_union %>% 
   summarise() %>% 
   st_make_grid(.,
@@ -81,9 +59,6 @@ us_grid <- usa_union %>%
                             200*10^3),
                square = FALSE) %>% 
   st_as_sf()
-
-# us_grid <- us_grid %>% 
-#   st_intersection(usa_union)
 
 stations <- stations %>% 
   mutate(us_dist = st_distance(.,
@@ -124,15 +99,6 @@ us_grid <- us_grid %>%
                      intersections_data,
                      by = "grid_id")
 
-
-# us_grid <- us_grid %>% 
-#   mutate(across(c(public, private),
-#                 ~ ifelse(is.na(.x),
-#                          0,
-#                          .x)))
-
-log(NA)
-
 us_grid <- us_grid %>% 
   mutate(across(c(public, private),
                 ~ log(.x + 1),
@@ -143,7 +109,6 @@ us_grid <- us_grid %>%
                 ~ ifelse(is.na(.x),
                          0,
                          .x)))
-
 
 
 us_plot <- usa %>% 
@@ -160,9 +125,10 @@ bkg <- element_rect(fill = bkg_col,
 txt_font <- "Fira Sans"
 
 
-
 pal <- met.brewer("VanGogh3",
                   type = "continuous")
+
+scales::show_col(pal)
 
 pal_text <- pal %>% unlist() %>% as.character()
 pt1 <- pal_text[1]
@@ -179,32 +145,30 @@ ggplot() +
           fill = NA,
           color = "white",
           size = 0.225) +
-  # scale_fill_viridis(direction = -1,
-  #                    option = "F",
-  #                    name = "") +
   scale_fill_gradientn(colors = pal) +
   theme_void() +
   labs(title = "Alternative Fuel Stations in the US",
-       subtitle = "Number (log) of Alternative Fuel Stations with public access.<br><span style='color:#447243'>Darker colors </span> reflect a larger number of stations",
+       subtitle = "Number (log) of Alternative Fuel Stations with public access.<br><span style='color:#669D62'>Darker colors </span> reflect a larger number of stations",
        caption = "Graphics: Jeppe Vierø | <span style='font-family: \"Font Awesome 5 Brands\"'> &#xf099;</span> &emsp; <span style='font-family: \"Font Awesome 5 Brands\"'>&#xf09b; &emsp; &emsp; </span> jvieroe | #TidyTuesday 2022, Week 9 | Data: US DOT") +
   coord_sf(clip = "off",
            xlim = c(st_bbox(us_grid)[[1]]*1.00,
                     st_bbox(us_grid)[[3]]*1.00),
-           ylim = c(st_bbox(us_grid)[[2]]*1.35,
-                    st_bbox(us_grid)[[4]]*1.35)) +
+           ylim = c(st_bbox(us_grid)[[2]]*1.122,
+                    st_bbox(us_grid)[[4]]*1.122)) +
   theme(panel.background = bkg,
         plot.background = bkg,
         plot.title = ggtext::element_markdown(hjust = 0.5,
                                               color = pt1,
-                                              size = 24,
+                                              size = 28,
                                               family = txt_font,
                                               margin = ggplot2::margin(t = 10,
                                                                        b = -30,
                                                                        unit = "pt")),
         plot.subtitle = ggtext::element_markdown(hjust = 0.5,
                                                  color = txt_col,
+                                                 size = 14,
                                                  family = txt_font,
-                                                 margin = ggplot2::margin(t = 15,
+                                                 margin = ggplot2::margin(t = 35,
                                                                           b = -35,
                                                                           unit = "pt")),
         plot.caption = ggtext::element_markdown(hjust = 0.5,
