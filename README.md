@@ -57,3 +57,11 @@ TBA
 <a href="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_08/code_fh.R"> Code</a> • <a href="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_08/fh.png"> Download </a>
 
 <img src="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_08/fh.png?raw=true" alt="" width="750">
+
+
+
+## Week 9: Alternative Fuel Stations
+
+<a href="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_09/code_fuel.R"> Code</a> • <a href="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_09/fuel.png"> Download </a>
+
+<img src="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_09/fuel.png?raw=true" alt="" width="750">
