@@ -1,0 +1,134 @@
+library(tidyverse)
+library(janitor)
+library(MetBrewer)
+library(ggtext)
+
+
+sports <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-03-29/sports.csv')
+
+sports <- sports %>% 
+  arrange(institution_name,
+          unitid,
+          year)
+
+
+exp_gap <- sports %>% 
+  group_by(sports) %>% 
+  summarize(exp_men = sum(exp_men, na.rm = TRUE),
+            exp_women = sum(exp_women, na.rm = TRUE),
+            total_exp_menwomen = sum(total_exp_menwomen, na.rm = TRUE)) %>% 
+  ungroup()
+
+exp_gap <- exp_gap %>% 
+  filter(total_exp_menwomen > 0)
+
+exp_gap <- exp_gap %>% 
+  mutate(share_men = exp_men / total_exp_menwomen) %>% 
+  mutate(share_women = exp_women / total_exp_menwomen)
+
+
+exp_gap <- exp_gap %>% 
+  pivot_longer(!c(sports, !starts_with("share")),
+               values_to = "share",
+               names_to = "binary_gender",
+               names_prefix = "share_") %>% 
+  arrange(sports)
+
+exp_gap %>% 
+  group_by(sports) %>% 
+  summarize(t = sum(share)) %>%  
+  tabyl(t)
+
+exp_gap <- exp_gap %>% 
+  mutate(share = ifelse(binary_gender == "men",
+                        - share,
+                        share))
+
+
+
+exp_gap <- exp_gap %>% 
+  arrange(sports,
+          binary_gender) %>% 
+  group_by(sports) %>% 
+  mutate(men_women = dplyr::lag(share)) %>% 
+  ungroup()
+
+
+exp_gap <- exp_gap %>% 
+  mutate(share = ifelse(is.na(share),
+                        0,
+                        share))
+
+
+bkg_col <- "gray20"
+bkg <- element_rect(fill = bkg_col,
+                    color = bkg_col)
+fg_col <- "gray80"
+
+
+MetBrewer::display_all()
+pal <- met.brewer("Hiroshige",
+                  type = "discrete")
+pal
+
+
+txt_data <- exp_gap %>% 
+  filter(binary_gender == "men")
+
+ggplot() +
+  geom_hline(yintercept = c(-0.5, 0, 0.5),
+             linetype = "dashed",
+             color = fg_col, alpha = .5) +
+  geom_segment(data = exp_gap,
+               aes(x = fct_reorder(sports,
+                                   share),
+                   xend = fct_reorder(sports,
+                                      share),
+                   y = share,
+                   yend = 0,
+                   color = binary_gender)) +
+  geom_point(data = exp_gap,
+             aes(x = fct_reorder(sports,
+                                 share),
+                 y = share,
+                 fill = binary_gender,
+                 color = binary_gender,
+                 size = total_exp_menwomen),
+             shape = 21) +
+  scale_color_manual(values = c(pal[4], pal[6])) +
+  scale_fill_manual(values = c(pal[4], pal[6])) +
+  geom_text(data = txt_data,
+            aes(x = fct_reorder(sports,
+                                share),
+                y = share,
+                label = sports),
+            color = fg_col,
+            hjust = 1,
+            size = 4,
+            nudge_y = -.025,
+            nudge_x = .1) +
+  coord_flip() +
+  labs(x = "",
+       y = "Share",
+       title = "TITLE",
+       subtitle = "SUBTITLE",
+       caption = "caption") + 
+  scale_y_continuous(breaks = seq(-1, 1, 0.5),
+                     labels = c("100%\nfor Men", "50%",
+                                "0%",
+                                "50%", "100%\nfor Women")) + 
+  # abs, function(x) percent(abs(x)), scales::percent_format(), scales::label_percent(prefix = "")
+  scale_x_discrete(expand = expansion(mult = c(0.025,0.0))) +
+  theme(legend.position = "none",
+        panel.background = bkg,
+        plot.background = bkg,
+        panel.grid = element_blank(),
+        axis.text.x = element_text(color = fg_col),
+        axis.text.y = element_blank(),
+        axis.title.x = element_text(color = fg_col),
+        axis.title.y = element_blank(),
+        plot.margin = ggplot2::margin(t = 0,
+                                      unit = "pt"),
+        plot.title = ggtext::element_markdown(color = fg_col),
+        plot.subtitle = ggtext::element_markdown(color = fg_col),
+        plot.caption = ggtext::element_markdown(color = fg_col))
