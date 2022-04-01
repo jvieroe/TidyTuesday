@@ -116,9 +116,10 @@ ggplot() +
   scale_y_continuous(breaks = seq(-1, 1, 0.5),
                      labels = c("100%\nfor Men", "50%",
                                 "0%",
-                                "50%", "100%\nfor Women")) + 
+                                "50%", "100%\nfor Women"),
+                     expand = expansion(mult = c(0.05,0.05))) + 
   # abs, function(x) percent(abs(x)), scales::percent_format(), scales::label_percent(prefix = "")
-  scale_x_discrete(expand = expansion(mult = c(0.025,0.0))) +
+  scale_x_discrete(expand = expansion(mult = c(0.025,0.05))) +
   theme(legend.position = "none",
         panel.background = bkg,
         plot.background = bkg,
@@ -132,3 +133,7 @@ ggplot() +
         plot.title = ggtext::element_markdown(color = fg_col),
         plot.subtitle = ggtext::element_markdown(color = fg_col),
         plot.caption = ggtext::element_markdown(color = fg_col))
+
+
+ggsave(plot = last_plot(),
+       filename = "2022/week_13/sports.png")
