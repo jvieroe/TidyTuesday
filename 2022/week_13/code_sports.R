@@ -113,8 +113,8 @@ ggplot() +
   coord_flip() +
   labs(x = "",
        y = "Share",
-       title = "College Sports Expenditure Share",
-       subtitle = "Share of total expenditure <span style='color:#ffd06f'>Men's</span> and <span style='color:#aadce0'>Women's</span> sports",
+       title = "The State of College Sports Expenditure Equity",
+       subtitle = "Share of total expenditures allocated to <span style='color:#ffd06f'>Men's</span> and <span style='color:#aadce0'>Women's</span> collegiate sports budgets (2015-2019)<br>by sport",
        caption = "Graphics: Jeppe Vierø | <span style='font-family: \"Font Awesome 5 Brands\"'> &#xf099;</span> &emsp; <span style='font-family: \"Font Awesome 5 Brands\"'>&#xf09b; &emsp; &emsp; </span> jvieroe | #TidyTuesday 2022, Week 13 | Data: Equity in Athletics Data Analysis") + 
   scale_y_continuous(breaks = seq(-1, 1, 0.5),
                      labels = c("100%\nfor Men", "50%",
