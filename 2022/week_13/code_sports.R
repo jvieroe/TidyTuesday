@@ -81,7 +81,7 @@ txt_data <- exp_gap %>%
   filter(binary_gender == "men")
 
 ggplot() +
-  geom_hline(yintercept = c(-0.5, 0, 0.5),
+  geom_hline(yintercept = c(-1, -0.5, 0, 0.5, 1),
              linetype = "dashed",
              color = fg_col, alpha = .5) +
   geom_segment(data = exp_gap,
@@ -102,7 +102,7 @@ ggplot() +
              shape = 21) +
   scale_color_manual(values = c(pal[4], pal[6])) +
   scale_fill_manual(values = c(pal[4], pal[6])) +
-  scale_size_continuous(range = c(.1, 8)) +
+  scale_size_continuous(range = c(.5, 8)) +
   geom_text(data = txt_data,
             aes(x = fct_reorder(sports,
                                 share),
@@ -119,8 +119,8 @@ ggplot() +
        y = "Share",
        title = "Equity in College Athletics Expenditure?",
        subtitle = "Share of total expenditures allocated to <span style='color:#ffd06f;font-size:16px'>Men's</span> and <span style='color:#aadce0;font-size:16px'>Women's</span> collegiate sports budgets (2015-2019) by sport.<br>
-       Size represents total expenditure for each sport. The majority of college sports have expenditures that are skewed towards<br><span style='color:#aadce0'>women</span> &#8212; but disciplines with the largest 
-       total expenditures see money predominantly being allocated to <span style='color:#ffd06f;font-size:16px'>men's sports</span>.",
+       Size represents total expenditure for each sport. The majority of college sports have expenditures that are skewed towards<br><span style='color:#aadce0'>women's athletics</span> &#8212; but disciplines with the largest 
+       total expenditures see money predominantly being allocated to <span style='color:#ffd06f;font-size:16px'>men's athletics</span>.",
        caption = "Graphics: Jeppe Vierø | <span style='font-family: \"Font Awesome 5 Brands\"'> &#xf099;</span> &emsp; <span style='font-family: \"Font Awesome 5 Brands\"'>&#xf09b; &emsp; &emsp; </span> jvieroe | #TidyTuesday 2022, Week 13 | Data: Equity in Athletics Data Analysis") + 
   scale_y_continuous(breaks = seq(-1, 1, 0.5),
                      labels = c("100%\nallocated to Men's\nathletics", "50%",
@@ -136,7 +136,8 @@ ggplot() +
                                    family = base_font),
         axis.text.y = element_blank(),
         axis.title.x = element_text(color = fg_col,
-                                    family = title_font),
+                                    family = title_font,
+                                    hjust = 0.535),
         axis.title.y = element_blank(),
         plot.margin = ggplot2::margin(t = 20,
                                       l = 10,
@@ -144,9 +145,10 @@ ggplot() +
                                       b = 5,
                                       unit = "pt"),
         plot.title = ggtext::element_markdown(color = "white",
-                                              size = 20,
+                                              size = 24,
                                               family = title_font),
         plot.subtitle = ggtext::element_markdown(color = fg_col,
+                                                 size = 12,
                                                  family = title_font,
                                                  margin = ggplot2::margin(b = 10,
                                                                           unit = "pt")),
