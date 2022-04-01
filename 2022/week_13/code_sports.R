@@ -137,7 +137,7 @@ ggplot() +
         plot.margin = ggplot2::margin(t = 20,
                                       l = 10,
                                       r = 10,
-                                      b = 10,
+                                      b = 5,
                                       unit = "pt"),
         plot.title = ggtext::element_markdown(color = "white",
                                               size = 20,
