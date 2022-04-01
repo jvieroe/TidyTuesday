@@ -112,7 +112,7 @@ ggplot() +
        y = "Share",
        title = "College Sports Expenditure Share",
        subtitle = "SUBTITLE",
-       caption = "caption") + 
+       caption = "Graphics: Jeppe Vierø | <span style='font-family: \"Font Awesome 5 Brands\"'> &#xf099;</span> &emsp; <span style='font-family: \"Font Awesome 5 Brands\"'>&#xf09b; &emsp; &emsp; </span> jvieroe | #TidyTuesday 2022, Week 13 | Data: Equity in Athletics Data Analysis") + 
   scale_y_continuous(breaks = seq(-1, 1, 0.5),
                      labels = c("100%\nfor Men", "50%",
                                 "0%",
