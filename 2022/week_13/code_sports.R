@@ -115,7 +115,8 @@ ggplot() +
        y = "Share",
        title = "The State of College Sports Expenditure Equity",
        subtitle = "Share of total expenditures allocated to <span style='color:#ffd06f;font-size:16px'>Men's</span> and <span style='color:#aadce0;font-size:16px'>Women's</span> collegiate sports budgets (2015-2019)<br>by sport.
-       Size represents total expenditure for each sport. The majority of college sports budget are skewed<br>towards <span style='color:#aadce0'>women's sports</span> &#8211; but college sports with the largest budgets are predominantly ",
+       Size represents total expenditure for each sport. The majority of college sports have expenditures that are skewed<br>towards <span style='color:#aadce0'>women's sports</span> &#8211; but those disciplines with the largest 
+       total expenditures are predominantly directing money to <span style='color:#ffd06f;font-size:16px'>men's sports</span>.",
        caption = "Graphics: Jeppe Vierø | <span style='font-family: \"Font Awesome 5 Brands\"'> &#xf099;</span> &emsp; <span style='font-family: \"Font Awesome 5 Brands\"'>&#xf09b; &emsp; &emsp; </span> jvieroe | #TidyTuesday 2022, Week 13 | Data: Equity in Athletics Data Analysis") + 
   scale_y_continuous(breaks = seq(-1, 1, 0.5),
                      labels = c("100%\nfor Men", "50%",
