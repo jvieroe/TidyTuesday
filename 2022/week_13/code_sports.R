@@ -136,6 +136,8 @@ ggplot() +
         axis.title.y = element_blank(),
         plot.margin = ggplot2::margin(t = 20,
                                       l = 10,
+                                      r = 10,
+                                      b = 10,
                                       unit = "pt"),
         plot.title = ggtext::element_markdown(color = "white",
                                               size = 20,
