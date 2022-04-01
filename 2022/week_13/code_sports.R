@@ -74,6 +74,8 @@ pal
 pal[4]
 pal[6]
 
+base_font <- "Ubuntu Mono"
+
 
 txt_data <- exp_gap %>% 
   filter(binary_gender == "men")
@@ -135,9 +137,13 @@ ggplot() +
         plot.margin = ggplot2::margin(t = 20,
                                       l = 10,
                                       unit = "pt"),
-        plot.title = ggtext::element_markdown(color = fg_col),
-        plot.subtitle = ggtext::element_markdown(color = fg_col),
-        plot.caption = ggtext::element_markdown(color = fg_col))
+        plot.title = ggtext::element_markdown(color = fg_col,
+                                              size = 20,
+                                              family = base_font),
+        plot.subtitle = ggtext::element_markdown(color = fg_col,
+                                                 family = base_font),
+        plot.caption = ggtext::element_markdown(color = fg_col,
+                                                family = base_font))
 
 
 ggsave(plot = last_plot(),
