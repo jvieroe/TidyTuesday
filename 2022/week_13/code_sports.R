@@ -71,6 +71,9 @@ pal <- met.brewer("Hiroshige",
                   type = "discrete")
 pal
 
+pal[4]
+pal[6]
+
 
 txt_data <- exp_gap %>% 
   filter(binary_gender == "men")
@@ -111,7 +114,7 @@ ggplot() +
   labs(x = "",
        y = "Share",
        title = "College Sports Expenditure Share",
-       subtitle = "SUBTITLE",
+       subtitle = "Share of total expenditure <span style='color:#ffd06f'>Men's</span> and <span style='color:#aadce0'>Women's</span> sports",
        caption = "Graphics: Jeppe Vierø | <span style='font-family: \"Font Awesome 5 Brands\"'> &#xf099;</span> &emsp; <span style='font-family: \"Font Awesome 5 Brands\"'>&#xf09b; &emsp; &emsp; </span> jvieroe | #TidyTuesday 2022, Week 13 | Data: Equity in Athletics Data Analysis") + 
   scale_y_continuous(breaks = seq(-1, 1, 0.5),
                      labels = c("100%\nfor Men", "50%",
