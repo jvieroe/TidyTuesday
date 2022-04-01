@@ -76,7 +76,6 @@ pal[6]
 
 base_font <- "Ubuntu Mono"
 
-
 txt_data <- exp_gap %>% 
   filter(binary_gender == "men")
 
@@ -125,7 +124,7 @@ ggplot() +
                                 "0%",
                                 "50%", "100%\nfor Women"),
                      expand = expansion(mult = c(0.1,0.05))) + 
-  scale_x_discrete(expand = expansion(mult = c(0.025,0.05))) +
+  scale_x_discrete(expand = expansion(mult = c(0.07,0.05))) +
   theme(legend.position = "none",
         panel.background = bkg,
         plot.background = bkg,
