@@ -128,6 +128,7 @@ ggplot() +
         axis.title.x = element_text(color = fg_col),
         axis.title.y = element_blank(),
         plot.margin = ggplot2::margin(t = 10,
+                                      l = 10,
                                       unit = "pt"),
         plot.title = ggtext::element_markdown(color = fg_col),
         plot.subtitle = ggtext::element_markdown(color = fg_col),
