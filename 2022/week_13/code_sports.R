@@ -63,7 +63,7 @@ exp_gap <- exp_gap %>%
 bkg_col <- "gray20"
 bkg <- element_rect(fill = bkg_col,
                     color = bkg_col)
-fg_col <- "gray80"
+fg_col <- "gray90"
 
 
 MetBrewer::display_all()
@@ -75,6 +75,7 @@ pal[4]
 pal[6]
 
 base_font <- "Ubuntu Mono"
+title_font <- "Titillium Web"
 
 txt_data <- exp_gap %>% 
   filter(binary_gender == "men")
@@ -101,50 +102,58 @@ ggplot() +
              shape = 21) +
   scale_color_manual(values = c(pal[4], pal[6])) +
   scale_fill_manual(values = c(pal[4], pal[6])) +
+  scale_size_continuous(range = c(.1, 8)) +
   geom_text(data = txt_data,
             aes(x = fct_reorder(sports,
                                 share),
                 y = share,
                 label = sports),
             color = fg_col,
+            family = base_font,
             hjust = 1,
             size = 4,
-            nudge_y = -.025,
+            nudge_y = -.035,
             nudge_x = .1) +
   coord_flip() +
   labs(x = "",
        y = "Share",
-       title = "The State of College Sports Expenditure Equity",
-       subtitle = "Share of total expenditures allocated to <span style='color:#ffd06f;font-size:16px'>Men's</span> and <span style='color:#aadce0;font-size:16px'>Women's</span> collegiate sports budgets (2015-2019)<br>by sport.
-       Size represents total expenditure for each sport. The majority of college sports have expenditures that are skewed<br>towards <span style='color:#aadce0'>women's sports</span> &#8211; but those disciplines with the largest 
-       total expenditures are predominantly directing money<br>to <span style='color:#ffd06f;font-size:16px'>men's sports</span>.",
+       title = "Equity in College Athletics Expenditure?",
+       subtitle = "Share of total expenditures allocated to <span style='color:#ffd06f;font-size:16px'>Men's</span> and <span style='color:#aadce0;font-size:16px'>Women's</span> collegiate sports budgets (2015-2019) by sport.<br>
+       Size represents total expenditure for each sport. The majority of college sports have expenditures that are skewed towards<br><span style='color:#aadce0'>women</span> &#8212; but disciplines with the largest 
+       total expenditures see money predominantly being allocated to <span style='color:#ffd06f;font-size:16px'>men's sports</span>.",
        caption = "Graphics: Jeppe Vierø | <span style='font-family: \"Font Awesome 5 Brands\"'> &#xf099;</span> &emsp; <span style='font-family: \"Font Awesome 5 Brands\"'>&#xf09b; &emsp; &emsp; </span> jvieroe | #TidyTuesday 2022, Week 13 | Data: Equity in Athletics Data Analysis") + 
   scale_y_continuous(breaks = seq(-1, 1, 0.5),
-                     labels = c("100%\nfor Men", "50%",
+                     labels = c("100%\nallocated to Men's\nathletics", "50%",
                                 "0%",
-                                "50%", "100%\nfor Women"),
+                                "50%", "100%\nallocated to Women's\nathletics"),
                      expand = expansion(mult = c(0.1,0.05))) + 
-  scale_x_discrete(expand = expansion(mult = c(0.07,0.05))) +
+  scale_x_discrete(expand = expansion(mult = c(0.025,0.025))) +
   theme(legend.position = "none",
         panel.background = bkg,
         plot.background = bkg,
         panel.grid = element_blank(),
-        axis.text.x = element_text(color = fg_col),
+        axis.text.x = element_text(color = fg_col,
+                                   family = base_font),
         axis.text.y = element_blank(),
-        axis.title.x = element_text(color = fg_col),
+        axis.title.x = element_text(color = fg_col,
+                                    family = title_font),
         axis.title.y = element_blank(),
         plot.margin = ggplot2::margin(t = 20,
                                       l = 10,
-                                      r = 10,
+                                      r = 20,
                                       b = 5,
                                       unit = "pt"),
         plot.title = ggtext::element_markdown(color = "white",
                                               size = 20,
-                                              family = base_font),
+                                              family = title_font),
         plot.subtitle = ggtext::element_markdown(color = fg_col,
-                                                 family = base_font),
+                                                 family = title_font,
+                                                 margin = ggplot2::margin(b = 10,
+                                                                          unit = "pt")),
         plot.caption = ggtext::element_markdown(color = fg_col,
-                                                family = base_font))
+                                                family = title_font,
+                                                margin = ggplot2::margin(t = 20,
+                                                                         unit = "pt")))
 
 
 ggsave(plot = last_plot(),
