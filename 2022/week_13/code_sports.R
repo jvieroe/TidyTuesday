@@ -67,12 +67,22 @@ fg_col <- "gray90"
 
 
 MetBrewer::display_all()
+
+# pal <- met.brewer("Benedictus",
+#                   type = "discrete")
+# pal
+# pal[4]
+# pal[11]
+
+
 pal <- met.brewer("Hiroshige",
                   type = "discrete")
 pal
 
 pal[4]
-pal[6]
+pal[7]
+
+
 
 base_font <- "Ubuntu Mono"
 title_font <- "Titillium Web"
@@ -100,8 +110,8 @@ ggplot() +
                  color = binary_gender,
                  size = total_exp_menwomen),
              shape = 21) +
-  scale_color_manual(values = c(pal[4], pal[6])) +
-  scale_fill_manual(values = c(pal[4], pal[6])) +
+  scale_color_manual(values = c(pal[4], pal[7])) +
+  scale_fill_manual(values = c(pal[4], pal[7])) +
   scale_size_continuous(range = c(.5, 8)) +
   geom_text(data = txt_data,
             aes(x = fct_reorder(sports,
@@ -118,8 +128,8 @@ ggplot() +
   labs(x = "",
        y = "Share",
        title = "Equity in College Athletics Expenditure?",
-       subtitle = "Share of total expenditures allocated to <span style='color:#ffd06f;font-size:16px'>Men's</span> and <span style='color:#aadce0;font-size:16px'>Women's</span> collegiate sports budgets (2015-2019) by sport.<br>
-       Size represents total expenditure for each sport. The majority of college sports have expenditures that are skewed towards<br><span style='color:#aadce0'>women's athletics</span> &#8212; but disciplines with the largest 
+       subtitle = "Share of total expenditures allocated to <span style='color:#ffd06f;font-size:18px'>Men's</span> and <span style='color:#72bcd5;font-size:18px'>Women's</span> collegiate sports budgets (2015-2019) by sport.<br>
+       Size represents total expenditure for each sport. The majority of college sports have expenditures that are skewed towards<br><span style='color:#72bcd5'>women's athletics</span> &#8212; but disciplines with the largest 
        total expenditures see money predominantly being allocated to <span style='color:#ffd06f;font-size:16px'>men's athletics</span>.",
        caption = "Graphics: Jeppe Vierø | <span style='font-family: \"Font Awesome 5 Brands\"'> &#xf099;</span> &emsp; <span style='font-family: \"Font Awesome 5 Brands\"'>&#xf09b; &emsp; &emsp; </span> jvieroe | #TidyTuesday 2022, Week 13 | Data: Equity in Athletics Data Analysis") + 
   scale_y_continuous(breaks = seq(-1, 1, 0.5),
