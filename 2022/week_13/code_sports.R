@@ -110,7 +110,7 @@ ggplot() +
   coord_flip() +
   labs(x = "",
        y = "Share",
-       title = "TITLE",
+       title = "College Sports Expenditure Share",
        subtitle = "SUBTITLE",
        caption = "caption") + 
   scale_y_continuous(breaks = seq(-1, 1, 0.5),
