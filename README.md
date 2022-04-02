@@ -65,3 +65,14 @@ TBA
 <a href="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_09/code_fuel.R"> Code</a> • <a href="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_09/fuel.png"> Download </a>
 
 <img src="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_09/fuel.png?raw=true" alt="" width="750">
+
+
+
+
+## Week 13: Collegiate Sports Budgets
+
+<a href="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_13/code_sports.R"> Code</a> • <a href="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_13/sports.png"> Download </a>
+
+<img src="https://github.com/jvieroe/TidyTuesday/blob/main/2022/week_13/sports.png?raw=true" alt="" width="750">
+
+
